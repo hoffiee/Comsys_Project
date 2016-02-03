@@ -20,24 +20,22 @@ clc        % Clears the command window for easier debuggin
 
 % Constants
 M=2;        % nr of symbols
-alpha=0.1;  % Roll off effect
 fs=10e6;    % sample frequency: 1GHz
 Ts=1/fs;    
 Ns=10;      % Specify the length of the transmit pulse here (scalar)
-T=Ns*Ts;
-
+%T=Ns*Ts;
 
 %1. Convert bits to symbols
 const = [0 1];              % Specify constellation here (vector)
 a = [-5 5];                 % Convert the bits in vector b to symbols in vector a
 
-
 % This maps the amplitude for k signal. M=2
 for k=1:M
     ak(b==const(k))=a(k); % loops through b and creates a new vector ak with the corresponding symbol
 end
-
-%prova med M=4
+clc
+disp(ak);
+%prova med M=4, Denna verkar fungera bra
 %a4=[-5 -5/3 5/3 5];
 %M=4;
 %m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
@@ -51,30 +49,15 @@ end
 %    end
 %end
 
-disp(ak) %This works as intended
-
+%disp(ak) %This works as intended
 
 %2. Pulse Amplitude Modulation
 
-t=0:Ts:Ns*Ts;
-upp=sin((1-alpha)*pi*t/T)+(4*alpha*t/T).*cos((1+alpha)*pi*t/T);
-ner=pi*t.*(1-(4*alpha.*t/T).^2);
-
-
-grrc1=sqrt(T).*sin((1-alpha).*pi.*t./T)+(4.*alpha.*t./T).*cos((1+alpha).*pi.*t./T)./pi.*t.*(1-(4.*alpha.*t./T).^2);
-grrc=sqrt(T)*upp./ner;
-
-% Specify the transmit pulse here (vector)
-figure(3)
-stem(grrc1,'r')
-hold on
-stem(grrc,'b')
-legend('grrc1','grrc')
-%plot(t,grrc)
+g=ones(1,Ns);
     
-s=conv(ak(1),grrc);
+s=conv(ak(1),g);
 for i=2:length(ak)
-   s=[s conv(ak(i),grrc)]; % Tanken är att den skapar vardera med pulser
+   s=[s ak(i)*g]; % Tanken är att den skapar vardera med pulser
 end
 
 
