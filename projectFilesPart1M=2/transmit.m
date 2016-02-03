@@ -18,6 +18,7 @@ function s = transmit(b,plot_flag)
 
 clc        % Clears the command window for easier debuggin
 %Richy
+% Wiee
 % Constants
 M=2;        % nr of symbols
 fs=10e6;    % sample frequency: 1GHz
