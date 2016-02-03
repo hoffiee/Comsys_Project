@@ -21,31 +21,22 @@ function [b_hat] = receive(r,plot_flag)
 M=2;        % nr of symbols
 alpha=0.2;  % Roll off effect
 sps=10;     % Symbol per sample
-fs=10^6;    % sample frequency
-Ts=1/fs;
-Ns=10;
+fs=10e6;    % sample frequency
+Ts=1/fs;    
+Ns=10;      
 
 T=Ns*Ts;
 
-
-t=0:Ts:Ns*Ts;
-upp=sin((1-alpha)*pi*t/T)+(4*alpha*t/T).*cos((1+alpha)*pi*t/T);
-ner=pi*t.*(1-(4*alpha.*t/T).^2);
-grrc=sqrt(T)*upp./ner;
-
-h=fliplr(h);
+g=ones(1,Ns);
+MF=g;
 %1. filter with Rx filter (Matched filter)
 
-MF = rcosdesign(alpha,M,sps,'normal');
-
-
 %[];                  % Specify Rx filter here (vector)
-%y = filter(MF,1,r);       % Here the received signal r is passed through the matched filter to obtain y 
-%test
-y=upfirdn(r,MF,Ns);
+y = filter(MF,1,r);       % Here the received signal r is passed through the matched filter to obtain y 
 
 %2. Sample filter output
-y_sampled = [];             % Compute the sampled signal y_sampled
+
+y_sampled = y(1:Ns:length(y));             % Compute the sampled signal y_sampled
 
 %3. Make decision on which symbol was transmitted
 boundaries = [];          % Specify decision boundaries for minimum distance detection (vector)
