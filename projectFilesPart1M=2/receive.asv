@@ -24,7 +24,8 @@ sps=10;     % Symbol per sample
 fs=10e6;    % sample frequency
 Ts=1/fs;    
 Ns=10; 
-const = [-5 -5/3 5/3 5];
+boundaries = ([-5 5]); %För denna endast -5 och 5 då M=2
+const = ([0 1]);
 
 T=Ns*Ts;
 
@@ -47,22 +48,32 @@ y_sampled = y(1:Ns:length(y));             % Compute the sampled signal y_sample
 
 %3. Make decision on which symbol was transmitted
 
-%MDR
+%Mnimum-distance-receiver
 for i=1:length(y_sampled)
-    for j=1:length(const)
-       D(j)= y_sampled(i)-const(j); %Calculate the distance between chosen value and the constellations
+    for j=1:length(boundaries)
+       D(j)= (abs(y_sampled(i)-boundaries(j)))^2; %Calculate the distance between chosen value and the constellations
     end
-    yk(i)=min(D)    %Decides which constellation that matches the value. (minimum distance)
+    [M,I]=min(D)    %Decides which constellation that matches the value. (minimum distance)
+    yk(i)=boundaries(I);
 end
 
-boundaries = [];          % Specify decision boundaries for minimum distance detection (vector)
-a_hat = [];                 % Compute the received symbols (in vector a_hat) from  
+%boundaries = const;          % Specify decision boundaries for minimum distance detection (vector)
+a_hat = yk;                 % Compute the received symbols (in vector a_hat) from  
                         % the sampled signal, based on your decision
                         % boundaries
+%Symbol to bits
+for i=1:length(a_hat)
+b_hat = const(ismember(a_hat(i),boundaries(:)));             % Convert the symbols in vector a_hat to bits in vector b_hat
+end
 
-
-b_hat = [];             % Convert the symbols in vector a_hat to bits in vector b_hat
-
+for i=1:length(a_hat)
+    for j=1:length(boundaries)
+        if a_hat(i) == boundaries (j)
+            b_hat = const(j)
+        end
+    end
+b_hat =              % Convert the symbols in vector a_hat to bits in vector b_hat
+end
 %********** DON'T EDIT FROM HERE ON ***************
 % plot Rx signals
 PlotSignals(plot_flag, 'Rx', r, y, y_sampled)
