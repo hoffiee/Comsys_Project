@@ -17,35 +17,61 @@ function [b_hat] = receive(r,plot_flag)
 
 % Complete the code below:     
 
-% Constants
-M=2;        % nr of symbols
-alpha=0.2;  % Roll off effect
-sps=10;     % Symbol per sample
-fs=10e6;    % sample frequency
-Ts=1/fs;    
-Ns=10;      
+% Constants%
+%M=2;        % nr of symbols
+%alpha=0.2;  % Roll off effect
+%sps=10;     % Symbol per sample
+%fs=10e6;    % sample frequency
+%%Ts=1/fs;  
+%T=Ns*Ts;
 
-T=Ns*Ts;
+Ns=10; 
+boundaries = ([-5 5]); %För denna endast -5 och 5 då M=2
+const = ([0 1]);
+
+
 
 g=ones(1,Ns);
 MF=g;
+%MF byts sedan ut mot
+%MF = r(end:-1:1);
 %1. filter with Rx filter (Matched filter)
 
 %[];                  % Specify Rx filter here (vector)
+
 y = filter(MF,1,r);       % Here the received signal r is passed through the matched filter to obtain y 
 
 %2. Sample filter output
 
-y_sampled = y(1:Ns:length(y));             % Compute the sampled signal y_sampled
+
+y_sampled = y(Ns:Ns:length(y));             % Compute the sampled signal y_sampled
+%Placerar varje diskret diraq-spik i en vektor, då vi vet att varje spik
+%har Ns avstånd mellan sig.
+
 
 %3. Make decision on which symbol was transmitted
-boundaries = [];          % Specify decision boundaries for minimum distance detection (vector)
-a_hat = [];                 % Compute the received symbols (in vector a_hat) from  
+
+%Mnimum-distance-receiver
+for i=1:length(y_sampled)
+    for j=1:length(boundaries)
+       D(j)= (abs(y_sampled(i)-boundaries(j)))^2; %Calculate the distance between chosen value and the constellations
+    end
+    [M,I]=min(D);    %Decides which constellation that matches the value. (minimum distance)
+    yk(i)=boundaries(I);
+end
+
+%boundaries = const;          % Specify decision boundaries for minimum distance detection (vector)
+a_hat = yk;                 % Compute the received symbols (in vector a_hat) from  
                         % the sampled signal, based on your decision
                         % boundaries
-
-
-b_hat = [];             % Convert the symbols in vector a_hat to bits in vector b_hat
+%Symbol to bits for M=2
+for i=1:length(a_hat)
+    for j=1:length(boundaries)
+        if a_hat(i) == boundaries (j)
+            b_hat(i) = const(j);    % Convert the symbols in vector a_hat to bits in vector b_hat
+        end
+    end             
+end
 
 %********** DON'T EDIT FROM HERE ON ***************
 % plot Rx signals

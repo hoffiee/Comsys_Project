@@ -72,6 +72,7 @@ for i=1:length(a_hat)
         end
     end             
 end
+
 %********** DON'T EDIT FROM HERE ON ***************
 % plot Rx signals
 PlotSignals(plot_flag, 'Rx', r, y, y_sampled)
