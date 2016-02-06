@@ -17,13 +17,13 @@ function s = transmit(b,plot_flag)
 % Complete the code below to create samples of the transmitted signal.
 
 clc        % Clears the command window for easier debuggin
-%Richy
-% Wiee
+
 % Constants
 M=2;        % nr of symbols
-fs=10e6;    % sample frequency: 1GHz
-Ts=1/fs;    
 Ns=10;      % Specify the length of the transmit pulse here (scalar)
+
+%fs=1e12;    % sample frequency: 1GHz
+%Ts=1/fs;    
 %T=Ns*Ts;
 
 %1. Convert bits to symbols
@@ -34,8 +34,7 @@ a = [-5 5];                 % Convert the bits in vector b to symbols in vector 
 for k=1:M
     ak(b==const(k))=a(k); % loops through b and creates a new vector ak with the corresponding symbol
 end
-clc
-disp(ak);
+
 %prova med M=4, Denna verkar fungera bra
 %a4=[-5 -5/3 5/3 5];
 %M=4;
@@ -49,21 +48,18 @@ disp(ak);
 %        end
 %    end
 %end
-
 %disp(ak) %This works as intended
 
 %2. Pulse Amplitude Modulation
-
-g=ones(1,Ns);
+g=ones(1,Ns); % Creates the pulse with Ns samples
     
-s=conv(ak(1),g);
+
+% Perform PAM. The resulting transmit signal is the vector s.
+s=ak(1)*g;
 for i=2:length(ak)
-   s=[s ak(i)*g]; % Tanken är att den skapar vardera med pulser
+   s=[s ak(i)*g]; 
 end
 
-
-%hMod = comm.PAMModulator(M,'BitInput',true);                     % Perform PAM. The resulting transmit signal is the vector s.
-%s =step(hMod,b.');
 %********** DON'T EDIT FROM HERE ON ****************
 % plot Tx signals
 PlotSignals(plot_flag, 'Tx', a, s)

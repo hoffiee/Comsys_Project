@@ -17,19 +17,17 @@ function [b_hat] = receive(r,plot_flag)
 
 % Complete the code below:     
 
-% Constants%
-%M=2;        % nr of symbols
+% Constants
+M=2;        % nr of symbols
 %alpha=0.2;  % Roll off effect
 %sps=10;     % Symbol per sample
-%fs=10e6;    % sample frequency
-%%Ts=1/fs;  
-%T=Ns*Ts;
-
+fs=10e6;    % sample frequency
+Ts=1/fs;    
 Ns=10; 
 boundaries = ([-5 5]); %För denna endast -5 och 5 då M=2
 const = ([0 1]);
 
-
+T=Ns*Ts;
 
 g=ones(1,Ns);
 MF=g;
@@ -43,8 +41,7 @@ y = filter(MF,1,r);       % Here the received signal r is passed through the mat
 
 %2. Sample filter output
 
-
-y_sampled = y(Ns:Ns:length(y));             % Compute the sampled signal y_sampled
+y_sampled = y(10:Ns:length(y));             % Compute the sampled signal y_sampled
 %Placerar varje diskret diraq-spik i en vektor, då vi vet att varje spik
 %har Ns avstånd mellan sig.
 
