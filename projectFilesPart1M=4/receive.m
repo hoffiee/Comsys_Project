@@ -64,15 +64,23 @@ end
 a_hat = yk;                 % Compute the received symbols (in vector a_hat) from  
                         % the sampled signal, based on your decision
                         % boundaries
-%Symbol to bits for M=2
+%Symbol to bits for M=4 | Fungerar som den ska
+a=[-5 -5/3 5/3 5];
+M=4;
+m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
+a_hat=[-5/3 -5/3 -5 5]
 for i=1:length(a_hat)
-    for j=1:length(boundaries)
-        if a_hat(i) == boundaries (j)
-            b_hat(i) = const(j);    % Convert the symbols in vector a_hat to bits in vector b_hat
-        end
-    end             
+   for j=1:M
+       if a_hat(i) == a(j)
+          b_hat(2*(i-1)+1)=m{j}(1);
+          b_hat(2*(i-1)+2)=m{j}(2);
+       end
+   end
 end
+%disp(b_hat) 
 
+
+%b_hat(i)=
 %********** DON'T EDIT FROM HERE ON ***************
 % plot Rx signals
 PlotSignals(plot_flag, 'Rx', r, y, y_sampled)
