@@ -38,8 +38,8 @@ MF=g;
 %1. filter with Rx filter (Matched filter)
 
 %[];                  % Specify Rx filter here (vector)
-
-y = filter(MF,1,r);       % Here the received signal r is passed through the matched filter to obtain y 
+S=sum(abs(g).^2);
+y = filter(MF,S,r);       % Here the received signal r is passed through the matched filter to obtain y 
 
 %2. Sample filter output
 
