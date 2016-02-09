@@ -20,7 +20,9 @@ clc        % Clears the command window for easier debuggin
 
 % Constants
 Ns=10;      % Specify the length of the transmit pulse here (scalar)
-
+fs=10e6;    % sample frequency
+Ts=1/fs;  
+T=Ns*Ts;
 
 %1. Convert bits to symbols
 
@@ -38,16 +40,23 @@ for k=0:length(b)/log2(M)-1
         end
     end
 end
-disp(ak) %This works as intended
+%disp(ak) %This works as intended
 
 %2. Pulse Amplitude Modulation
 g=ones(1,Ns); % Creates the pulse with Ns samples
+
+%t=0:Ts:Ns*Ts;
+%t=-1:0.1:1;
+%g=rectangularPulse(t);
 %Eh=sum(abs(ifft(g)).^2)
 
 % Perform PAM. The resulting transmit signal is the vector s.
+
+
+
 s=ak(1)*g;
 for i=2:length(ak)
-   s=[s ak(i)*g]; 
+   s=[s conv(ak(i),g)]; 
 end
 %********** DON'T EDIT FROM HERE ON ****************
 % plot Tx signals

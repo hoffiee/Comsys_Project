@@ -18,28 +18,28 @@ function [b_hat] = receive(r,plot_flag)
 % Complete the code below:     
 
 % Constants%
-%M=2;        % nr of symbols
-%alpha=0.2;  % Roll off effect
-%sps=10;     % Symbol per sample
-%fs=10e6;    % sample frequency
-%%Ts=1/fs;  
-%T=Ns*Ts;
+
+fs=10e6;    % sample frequency
+Ts=1/fs;  
+Ns=10;
+T=Ns*Ts;
 
 Ns=10; 
-boundaries = ([-5 5]); %För denna endast -5 och 5 då M=2
-const = ([0 1]);
+boundaries = ([-5 -5/3 5/3 5]); %För denna endast -5 och 5 då M=2
 
 
 
-g=ones(1,Ns);
+
+%g=ones(1,Ns);
+g=rectangularPulse(-inf,inf,T);
 MF=g;
 %MF byts sedan ut mot
 %MF = r(end:-1:1);
 %1. filter with Rx filter (Matched filter)
 
 %[];                  % Specify Rx filter here (vector)
-S=sum(abs(g).^2);
-y = filter(MF,S,r);       % Here the received signal r is passed through the matched filter to obtain y 
+Eh=1;%sum(abs(g).^2);
+y = filter(MF,1,r);       % Here the received signal r is passed through the matched filter to obtain y 
 
 %2. Sample filter output
 
@@ -62,13 +62,12 @@ end
 
 %boundaries = const;          % Specify decision boundaries for minimum distance detection (vector)
 a_hat = yk;                 % Compute the received symbols (in vector a_hat) from  
-                        % the sampled signal, based on your decision
+                       % the sampled signal, based on your decision
                         % boundaries
 %Symbol to bits for M=4 | Fungerar som den ska
 a=[-5 -5/3 5/3 5];
 M=4;
 m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
-a_hat=[-5/3 -5/3 -5 5]
 for i=1:length(a_hat)
    for j=1:M
        if a_hat(i) == a(j)
@@ -79,8 +78,6 @@ for i=1:length(a_hat)
 end
 %disp(b_hat) 
 
-
-%b_hat(i)=
 %********** DON'T EDIT FROM HERE ON ***************
 % plot Rx signals
 PlotSignals(plot_flag, 'Rx', r, y, y_sampled)
