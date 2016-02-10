@@ -19,17 +19,15 @@ function s = transmit(b,plot_flag)
 clc        % Clears the command window for easier debuggin
 
 % Constants
+M=4;
 Ns=100;      % Specify the length of the transmit pulse here (scalar)
 fs=10e6;    % sample frequency
 Ts=1/fs;  
 T=Ns*Ts;
 
 %1. Convert bits to symbols
-
-
 %prova med M=4, Denna verkar fungera bra
 a=[-5 -5/3 5/3 5];
-M=4;
 m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
 ak=zeros(1,length(b)/log2(M));
 for k=0:length(b)/log2(M)-1

@@ -28,23 +28,19 @@ Ns=100;
 boundaries = ([-5 -5/3 5/3 5]); %För denna endast -5 och 5 då M=2
 
 
-
-
-%g=ones(1,Ns);
 MF=rectpulse(1,Ns);
 
 %MF byts sedan ut mot
-%MF = r(end:-1:1);
 %1. filter with Rx filter (Matched filter)
 
 %[];                  % Specify Rx filter here (vector)
 Eh=sum(abs(MF).^2);
-y = filter(MF,1,r)./Eh;       % Here the received signal r is passed through the matched filter to obtain y 
+y = filter(MF,1,r);       % Here the received signal r is passed through the matched filter to obtain y 
 
 %2. Sample filter output
 
 
-y_sampled = y(Ns:Ns:length(y));             % Compute the sampled signal y_sampled
+y_sampled = y(Ns:Ns:length(y))./Eh;             % Compute the sampled signal y_sampled
 %Placerar varje diskret diraq-spik i en vektor, då vi vet att varje spik
 %har Ns avstånd mellan sig.
 
