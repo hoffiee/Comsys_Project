@@ -19,7 +19,7 @@ function s = transmit(b,plot_flag)
 clc        % Clears the command window for easier debuggin
 
 % Constants
-Ns=10;      % Specify the length of the transmit pulse here (scalar)
+Ns=100;      % Specify the length of the transmit pulse here (scalar)
 fs=10e6;    % sample frequency
 Ts=1/fs;  
 T=Ns*Ts;
@@ -43,7 +43,7 @@ end
 %disp(ak) %This works as intended
 
 %2. Pulse Amplitude Modulation
-g=ones(1,Ns); % Creates the pulse with Ns samples
+%g=ones(1,Ns); % Creates the pulse with Ns samples
 
 %t=0:Ts:Ns*Ts;
 %t=-1:0.1:1;
@@ -54,10 +54,11 @@ g=ones(1,Ns); % Creates the pulse with Ns samples
 
 
 
-s=ak(1)*g;
-for i=2:length(ak)
-   s=[s conv(ak(i),g)]; 
-end
+%s=ak(1)*g;
+%for i=2:length(ak)
+%   s=[s conv(ak(i),g)]; 
+%end
+s=rectpulse(ak,Ns);
 %********** DON'T EDIT FROM HERE ON ****************
 % plot Tx signals
 PlotSignals(plot_flag, 'Tx', a, s)

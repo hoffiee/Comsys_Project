@@ -18,35 +18,28 @@ function [b_hat] = receive(r,plot_flag)
 % Complete the code below:     
 
 % Constants%
-%M=2;        % nr of symbols
-%alpha=0.2;  % Roll off effect
-%sps=10;     % Symbol per sample
+M=2;        % nr of symbols
+Ns=10; 
 %fs=10e6;    % sample frequency
-%%Ts=1/fs;  
+%Ts=1/fs;  
 %T=Ns*Ts;
 
-Ns=10; 
 boundaries = ([-5 5]); %För denna endast -5 och 5 då M=2
 const = ([0 1]);
 
 
-
-g=ones(1,Ns);
-MF=g;
-%MF byts sedan ut mot
-%MF = r(end:-1:1);
 %1. filter with Rx filter (Matched filter)
-
-%[];                  % Specify Rx filter here (vector)
-
-y = filter(MF,1,r);       % Here the received signal r is passed through the matched filter to obtain y 
+g=rectpulse(1,Ns);
+% due to h*(-t) on g = g
+y = filter(g,1,r);       % Here the received signal r is passed through the matched filter to obtain y 
 
 %2. Sample filter output
 
-
-y_sampled = y(Ns:Ns:length(y));             % Compute the sampled signal y_sampled
-%Placerar varje diskret diraq-spik i en vektor, då vi vet att varje spik
-%har Ns avstånd mellan sig.
+% Calculate the pulse energy
+Eh=sum(abs(g).^2);
+% Due to the function of the filter, the spike 
+% of each pulse is located at Ns
+y_sampled = y(Ns:Ns:length(y))./Eh;             % Compute the sampled signal y_sampled
 
 
 %3. Make decision on which symbol was transmitted

@@ -24,22 +24,22 @@ Ts=1/fs;
 Ns=10;
 T=Ns*Ts;
 
-Ns=10; 
+Ns=100; 
 boundaries = ([-5 -5/3 5/3 5]); %För denna endast -5 och 5 då M=2
 
 
 
 
 %g=ones(1,Ns);
-g=rectangularPulse(-inf,inf,T);
-MF=g;
+MF=rectpulse(1,Ns);
+
 %MF byts sedan ut mot
 %MF = r(end:-1:1);
 %1. filter with Rx filter (Matched filter)
 
 %[];                  % Specify Rx filter here (vector)
-Eh=1;%sum(abs(g).^2);
-y = filter(MF,1,r);       % Here the received signal r is passed through the matched filter to obtain y 
+Eh=sum(abs(MF).^2);
+y = filter(MF,1,r)./Eh;       % Here the received signal r is passed through the matched filter to obtain y 
 
 %2. Sample filter output
 
