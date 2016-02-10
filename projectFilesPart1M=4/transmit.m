@@ -20,11 +20,9 @@ clc        % Clears the command window for easier debuggin
 
 % Constants
 M=4;
-Ns=50;      % Specify the length of the transmit pulse here (scalar)
-
+Ns=50;     % 50 Samples have been tested and we receive a BER under 10e-3
 
 %1. Convert bits to symbols
-%prova med M=4, Denna verkar fungera bra
 a=[-5 -5/3 5/3 5];
 m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
 ak=zeros(1,length(b)/log2(M));
@@ -37,9 +35,7 @@ for k=0:length(b)/log2(M)-1
     end
 end
 
-%2. Pulse Amplitude Modulation
-
-% Perform PAM. The resulting transmit signal is the vector s.
+%2. Pulse Amplitude Modulation 
 s=rectpulse(ak,Ns);
 
 %********** DON'T EDIT FROM HERE ON ****************

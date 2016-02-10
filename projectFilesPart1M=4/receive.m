@@ -15,48 +15,29 @@ function [b_hat] = receive(r,plot_flag)
 
 %********** Begin program EDIT HERE
 
-% Complete the code below:     
-
 % Constants%
-
-
 Ns=50; 
 boundaries = ([-5 -5/3 5/3 5]); %För denna endast -5 och 5 då M=2
 
-
-MF=rectpulse(1,Ns);
-
-%MF byts sedan ut mot
 %1. filter with Rx filter (Matched filter)
-
-%[];                  % Specify Rx filter here (vector)
-Eh=sum(abs(MF).^2);
+MF=rectpulse(1,Ns);
 y = filter(MF,1,r);       % Here the received signal r is passed through the matched filter to obtain y 
 
 %2. Sample filter output
-
-
+Eh=sum(abs(MF).^2);
 y_sampled = y(Ns:Ns:length(y))./Eh;             % Compute the sampled signal y_sampled
-%Placerar varje diskret diraq-spik i en vektor, då vi vet att varje spik
-%har Ns avstånd mellan sig.
-
 
 %3. Make decision on which symbol was transmitted
-
 %Mnimum-distance-receiver
 for i=1:length(y_sampled)
     for j=1:length(boundaries)
        D(j)= (abs(y_sampled(i)-boundaries(j)))^2; %Calculate the distance between chosen value and the constellations
     end
     [M,I]=min(D);    %Decides which constellation that matches the value. (minimum distance)
-    yk(i)=boundaries(I);
-end
-
-%boundaries = const;          % Specify decision boundaries for minimum distance detection (vector)
-a_hat = yk;                 % Compute the received symbols (in vector a_hat) from  
-                       % the sampled signal, based on your decision
-                        % boundaries
-%Symbol to bits for M=4 | Fungerar som den ska
+    a_hat(i)=boundaries(I);
+end                       
+   
+%Symbol to bits for M=4
 a=[-5 -5/3 5/3 5];
 M=4;
 m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
@@ -68,7 +49,6 @@ for i=1:length(a_hat)
        end
    end
 end
-%disp(b_hat) 
 
 %********** DON'T EDIT FROM HERE ON ***************
 % plot Rx signals
