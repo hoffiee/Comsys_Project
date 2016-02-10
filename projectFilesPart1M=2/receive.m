@@ -19,10 +19,7 @@ function [b_hat] = receive(r,plot_flag)
 
 % Constants%
 M=2;        % nr of symbols
-Ns=10; 
-%fs=10e6;    % sample frequency
-%Ts=1/fs;  
-%T=Ns*Ts;
+Ns=6; 
 
 boundaries = ([-5 5]); %För denna endast -5 och 5 då M=2
 const = ([0 1]);
@@ -43,7 +40,6 @@ y_sampled = y(Ns:Ns:length(y))./Eh;             % Compute the sampled signal y_s
 
 
 %3. Make decision on which symbol was transmitted
-
 %Mnimum-distance-receiver
 for i=1:length(y_sampled)
     for j=1:length(boundaries)
@@ -53,10 +49,9 @@ for i=1:length(y_sampled)
     yk(i)=boundaries(I);
 end
 
-%boundaries = const;          % Specify decision boundaries for minimum distance detection (vector)
-a_hat = yk;                 % Compute the received symbols (in vector a_hat) from  
-                        % the sampled signal, based on your decision
-                        % boundaries
+%boundaries = const;    
+a_hat = yk;             
+                        
 %Symbol to bits for M=2
 for i=1:length(a_hat)
     for j=1:length(boundaries)

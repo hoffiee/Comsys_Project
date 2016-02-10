@@ -20,7 +20,7 @@ clc        % Clears the command window for easier debuggin
 
 % Constants
 M=2;        % nr of symbols
-Ns=10;      % Specify the length of the transmit pulse here (scalar)
+Ns=6;      % Specify the length of the transmit pulse here (scalar)
 %fs=1e12;    % sample frequency: 1GHz
 %Ts=1/fs;   % Vi kommer nog behöva använda dessa för att beräkna fram    
 %T=Ns*Ts;   % det Ns vi vill ha, samt beräkna systemets prestanda
