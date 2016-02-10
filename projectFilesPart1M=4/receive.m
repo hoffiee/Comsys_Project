@@ -19,12 +19,8 @@ function [b_hat] = receive(r,plot_flag)
 
 % Constants%
 
-fs=10e6;    % sample frequency
-Ts=1/fs;  
-Ns=10;
-T=Ns*Ts;
 
-Ns=100; 
+Ns=50; 
 boundaries = ([-5 -5/3 5/3 5]); %För denna endast -5 och 5 då M=2
 
 
