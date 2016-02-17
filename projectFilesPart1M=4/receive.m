@@ -15,9 +15,8 @@ function [b_hat] = receive(r,plot_flag)
 
 %********** Begin program EDIT HERE
 
-% Constants%
 Ns=50; 
-boundaries = ([-5 -5/3 5/3 5]); %För denna endast -5 och 5 då M=2
+boundaries = ([-5 -5/3 5/3 5]);
 
 %1. filter with Rx filter (Matched filter)
 MF=rectpulse(1,Ns);
@@ -28,7 +27,7 @@ Eh=sum(abs(MF).^2);
 y_sampled = y(Ns:Ns:length(y))./Eh;             % Compute the sampled signal y_sampled
 
 %3. Make decision on which symbol was transmitted
-%Mnimum-distance-receiver
+%Minimum-distance-receiver
 for i=1:length(y_sampled)
     for j=1:length(boundaries)
        D(j)= (abs(y_sampled(i)-boundaries(j)))^2; %Calculate the distance between chosen value and the constellations

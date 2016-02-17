@@ -67,7 +67,7 @@ while ipacket<=size(packages,1)
     % You have to complete the function pkg2frame
     frame=pkg2frame(packet,S_last);
 
-    
+   
     %3 Send current frame
     WriteToChannel(Channel, frame)
 

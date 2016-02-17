@@ -14,11 +14,6 @@ function s = transmit(b,plot_flag)
 
 %********** Begin program, EDIT HERE
 
-% Complete the code below to create samples of the transmitted signal.
-
-clc        % Clears the command window for easier debuggin
-
-% Constants
 M=4;
 Ns=50;     % 50 Samples have been tested and we receive a BER under 10e-3
 
