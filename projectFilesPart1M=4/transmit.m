@@ -15,7 +15,7 @@ function s = transmit(b,plot_flag)
 %********** Begin program, EDIT HERE
 
 M=4;
-Ns=50;     % 50 Samples have been tested and we receive a BER under 10e-3
+Ns=51;     % 50 Samples have been tested and we receive a BER under 10e-3
 
 %1. Convert bits to symbols
 a=[-5 -5/3 5/3 5];

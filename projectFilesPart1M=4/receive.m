@@ -15,7 +15,7 @@ function [b_hat] = receive(r,plot_flag)
 
 %********** Begin program EDIT HERE
 
-Ns=50; 
+Ns=51; 
 boundaries = ([-5 -5/3 5/3 5]);
 
 %1. filter with Rx filter (Matched filter)
