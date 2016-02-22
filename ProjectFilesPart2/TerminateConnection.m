@@ -60,7 +60,7 @@ if strcmp(sMode,'Rx')
                     disp(['FIN received'])
                 else
                     WriteToChannel(Channel,infoframe) %No FIN received (re send last ACK)
-                    disp(['Sent ACK' num2str(ipacket-1)])
+                    %disp(['Sent ACK' num2str(ipacket-1)])
                 end
             end
         end

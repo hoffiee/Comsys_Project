@@ -55,7 +55,9 @@ error('You must complete the Receiver function!!!!!')
 while ipacket<=nPackets 
     
     %1 check for data
-    nBitsOverhead = []; %define the number of overhead bits here!
+    
+    % Det är väl bara två overhead bits i single parity fallet?
+    nBitsOverhead = 2;%[]; %define the number of overhead bits here!
     ExpectedLengtOfFrame = nBitsPacket+nBitsOverhead; %this is the length of the frame we should receive
     Y = ReadFromChannel(Channel, ExpectedLengtOfFrame);
     
@@ -66,7 +68,18 @@ while ipacket<=nPackets
         %send ack by using: WriteToChannel(Channel,ackframe) where ackframe is your ackknowledgement frame
         %Complete the function [bError] = ErrorCheck(data,TypeOfErrorCheck) for error check of received data  
 
+        p=Y(length(Y));
          
+        % I single parity är det 1 bit bara       
+        if mod(sum(Y(1:length(a)-1))) == p && Y(1) == R_next         
+            
+            R_next = mod(R_next,1);
+            ackframe = R_next;
+            WriteToChannel(Channel,ackframe)
+        end
+        
+        
+        
     end
     
 end

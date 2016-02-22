@@ -65,12 +65,12 @@ while ipacket<=size(packages,1)
     %2 embedd packet in frame: implement the code to create frames (add
     %  header and trailer...)
     % You have to complete the function pkg2frame
-    frame=pkg2frame(packet,S_last);
+    frame=pkg2frame(packet,S_last,'sp');
 
    
     %3 Send current frame
     WriteToChannel(Channel, frame)
-
+    
     %4-6 stop and wait for ack: implement the rest of the transmitter side
     %  stop-and-wait ARQ protocol here 
          
