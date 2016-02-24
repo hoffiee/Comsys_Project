@@ -20,3 +20,13 @@ while ind <= length(d)-pl
 end
 
 p=nd(end-pl+1:end)
+
+%%
+clear all
+
+tic
+timeout= 0.5;
+while toc < timeout 
+end
+
+

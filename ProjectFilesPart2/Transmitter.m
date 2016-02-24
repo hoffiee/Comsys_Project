@@ -71,9 +71,20 @@ while ipacket<=size(packages,1)
     %3 Send current frame
     WriteToChannel(Channel, frame)
     
+    
+    
     %4-6 stop and wait for ack: implement the rest of the transmitter side
     %  stop-and-wait ARQ protocol here 
          
+    % 4. stop and wait
+    tic
+    timeout= 0.5;
+    while toc < timeout 
+    end
+    
+    
+    
+    
 end
 
 %------------- STOP EDITING HERE --------------

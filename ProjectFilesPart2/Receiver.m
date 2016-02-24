@@ -55,8 +55,6 @@ error('You must complete the Receiver function!!!!!')
 while ipacket<=nPackets 
     
     %1 check for data
-    
-    % Det är väl bara två overhead bits i single parity fallet?
     nBitsOverhead = 2;%[]; %define the number of overhead bits here!
     ExpectedLengtOfFrame = nBitsPacket+nBitsOverhead; %this is the length of the frame we should receive
     Y = ReadFromChannel(Channel, ExpectedLengtOfFrame);
