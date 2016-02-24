@@ -26,7 +26,8 @@ clear all
 
 tic
 timeout= 0.5;
-while toc < timeout 
+while toc < timeout
+    
 end
 
 

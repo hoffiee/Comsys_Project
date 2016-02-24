@@ -27,7 +27,7 @@ function frame=pkg2frame(packet,header,type)
 switch type
     case 'sp'   % Single parity check codes
         p = mod(sum([header packet]),2);
-        
+        break;
     case 'IC' % Internet Checksum
          %while sum(a(1:len(d)-3)) != 0
            % ind = find(d)
@@ -35,31 +35,35 @@ switch type
              %   d(ind:ind+3) = bitxor(d(ind:ind+3),g);   
                 
            % end
-        
+    break;
     case 'BP'   % Binary polynomials   
-        
+    break;
     case 'BPD'  % Binary polynomial divison
-        
+    break;
     case 'CRC'  % Cyclic redundancy codes CRC
         %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
         g=[1 0 1 1];
-        d=[header packet];
-        %i=[1 1 0 1 0 0 1 1 1 0 1 1 0 0];
-        %q=[1 1 1 1 0 0 0 1 1 1 1 1 0 0];
+        i=[1 1 0 1 0 0 1 1 1 0 1 1 0 0];
+        q=[1 1 1 1 0 0 0 1 1 1 1 1 0 0];
         pl=length(g)-1;
-        nd= [d zeros(1,pl)];
+        nd= [d zeros(1,pl)]
 
         ind=0;
 
-        while ind <= length(d)-pl        
+        while ind <= length(d)-pl
+            
             ind = find(nd);
             ind=ind(1);
+    
             nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g);
     
-        end
+end
 
-        p=nd(end-pl+1:end);
+p=nd(end-pl+1:end)
+
         
+        
+    break;
         
 end
 

@@ -66,7 +66,7 @@ while ipacket<=size(packages,1)
     %  header and trailer...)
     % You have to complete the function pkg2frame
     frame=pkg2frame(packet,S_last,'crc');
-    S_last=bitxor(S_last,1)
+    S_last=mod(S_last,1)
    
     %3 Send current frame
     WriteToChannel(Channel, frame)
@@ -91,10 +91,20 @@ while ipacket<=size(packages,1)
             end
         end
         if ~isnan(Y) %if data received
-            if isequal(Y,[bitxor(S_last,1) bitxor(S_last,1)]) % If no error detected and corr seq number.
+            if isequal(Y,[mod(S_last,1) mod(S_last,1)]) % If no error detected and corr seq number.
                 sent=1
         else % No data received.
+        
+        
+        
+        
     end
+    
+            
+        
+    while
+    
+    
     
     
 end
