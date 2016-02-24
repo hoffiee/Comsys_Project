@@ -55,7 +55,7 @@ S_last = 0;          %initialize sequence number for transmitter
 
 %------------- BEGIN EDITING HERE --------------
 
-error('You must complete the Transmitter function!!!!!')
+%error('You must complete the Transmitter function!!!!!')
 
 while ipacket<=size(packages,1)
     
@@ -65,7 +65,8 @@ while ipacket<=size(packages,1)
     %2 embedd packet in frame: implement the code to create frames (add
     %  header and trailer...)
     % You have to complete the function pkg2frame
-    frame=pkg2frame(packet,S_last,'crc');
+    disp(packet)
+    frame=pkg2frame(packet,S_last,'CRC');
     S_last=bitxor(S_last,1)
    
     %3 Send current frame
@@ -93,11 +94,13 @@ while ipacket<=size(packages,1)
         if ~isnan(Y) %if data received
             if isequal(Y,[bitxor(S_last,1) bitxor(S_last,1)]) % If no error detected and corr seq number.
                 sent=1
+            end
         else % No data received.
     end
     
-    
 end
+    
+
 
 %------------- STOP EDITING HERE --------------
 %7 terminate connection
