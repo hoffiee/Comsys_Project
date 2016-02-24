@@ -50,7 +50,11 @@ switch type
         nd= [d zeros(1,pl)];
 
         ind=0;
-
+        
+        if sum(d) == 0 % Ett hax för att få bara nollor att fungera...
+            ind=length(d)-pl+1;
+        end
+        
         while ind <= length(d)-pl        
             ind = find(nd);
             ind=ind(1);

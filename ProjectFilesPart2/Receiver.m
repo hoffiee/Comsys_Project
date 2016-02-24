@@ -50,7 +50,7 @@ ipacket = 1;                              %initialize packet counter
 R_next = 0;                               %initialize next frame expected (sequence number)
 
 %------------- START EDITING HERE --------------
-error('You must complete the Receiver function!!!!!')
+%error('You must complete the Receiver function!!!!!')
 
 while ipacket<=nPackets 
     
