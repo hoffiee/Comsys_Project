@@ -24,8 +24,23 @@ function [bError] = ErrorCheck(data,TypeOfErrorCheck)
 switch TypeOfErrorCheck
     case 'parity'
         bError=;        %Implement error check here
-    
-    
+    case 'CRC'
+        g=[1 0 1 1];
+        pl=length(g)-1;
+        nd= [data zeros(1,pl)]
+        ind=0;
+        while ind <= length(data)-pl
+            ind = find(nd);
+            ind=ind(1);
+            nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g);
+        end
+        p=nd(end-pl+1:end)
+        
+        if p == data(length(data)-pl:end)
+            return true;
+        else
+            return false;
+        end
     otherwise
         error('Invalid error check!')
         
