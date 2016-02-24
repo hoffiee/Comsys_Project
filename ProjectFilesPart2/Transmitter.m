@@ -51,7 +51,7 @@ if mod(nPackets,1)>0
 end
 packages = reshape(bitStream,nPackets,nBitsPacket);
 ipacket = 1;         %initialize packet counter
-S_last = 0;          %initialize sequence number for transmitter
+S_last = 1;          %initialize sequence number for transmitter
 
 %------------- BEGIN EDITING HERE --------------
 
@@ -65,12 +65,12 @@ while ipacket<=size(packages,1)
     %2 embedd packet in frame: implement the code to create frames (add
     %  header and trailer...)
     % You have to complete the function pkg2frame
-    disp(packet)
+    %disp(packet)
     frame=pkg2frame(packet,S_last,'CRC');
-    S_last=bitxor(S_last,1)
+    S_last=bitxor(S_last,1);
    
     %3 Send current frame
-    WriteToChannel(Channel, frame)
+    
     
     
     
@@ -79,23 +79,31 @@ while ipacket<=size(packages,1)
          
     % 4. stop and wait
     
-    sent = 0
+    sent = 0;
     
     while sent == 0
+        WriteToChannel(Channel, frame)
+        disp('skickade')
         tic
-        timeout= 0.5;
+        timeout= 2;
         while toc < timeout 
             ExpectedLengthOfFrame = 2;
             Y = ReadFromChannel(Channel, ExpectedLengthOfFrame);
             if ~isnan(Y) %if data received
+                disp('Fick något')
+                disp(Y')
+                isequal(Y',[bitxor(S_last,1) bitxor(S_last,1)])
+                disp([bitxor(S_last,1) bitxor(S_last,1)])
+                if isequal(Y',[bitxor(S_last,1) bitxor(S_last,1)]) % If no error detected and corr seq number.
+                    
+                    sent=1
+                    
+                end
                 break;
             end
         end
-        if ~isnan(Y) %if data received
-            if isequal(Y,[bitxor(S_last,1) bitxor(S_last,1)]) % If no error detected and corr seq number.
-                sent=1
-            end
-        else % No data received.
+        disp('Fick ingenting')
+
     end
     
 end

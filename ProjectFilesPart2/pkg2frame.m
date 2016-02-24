@@ -47,7 +47,7 @@ switch type
         %i=[1 1 0 1 0 0 1 1 1 0 1 1 0 0];
         %q=[1 1 1 1 0 0 0 1 1 1 1 1 0 0];
         pl=length(g)-1;
-        nd= [d zeros(1,pl)];
+        nd=[d zeros(1,pl)];
 
         ind=0;
         

@@ -54,8 +54,10 @@ R_next = 0;                               %initialize next frame expected (seque
 
 while ipacket<=nPackets 
     
+    % med det g vi har i CRC nu så har vi 1+3 bitar 
+    
     %1 check for data
-    nBitsOverhead = 2;%[]; %define the number of overhead bits here!
+    nBitsOverhead = 4;%[]; %define the number of overhead bits here!
     ExpectedLengtOfFrame = nBitsPacket+nBitsOverhead; %this is the length of the frame we should receive
     Y = ReadFromChannel(Channel, ExpectedLengtOfFrame);
     
@@ -66,20 +68,22 @@ while ipacket<=nPackets
         %send ack by using: WriteToChannel(Channel,ackframe) where ackframe is your ackknowledgement frame
         %Complete the function [bError] = ErrorCheck(data,TypeOfErrorCheck) for error check of received data  
 
-        p=Y(length(Y));
-        if ErrorCheck(Y,CRC) && Y(1)== R_next
+        %p=Y(length(Y));
+        if ErrorCheck(Y,'CRC') && Y(1)== R_next
             R_next = bitxor(R_next,1);
-            ackframe = R_next;
-            WritetoChannel(Channel, ackframe)
+            disp(R_next)
+            ackframe = [R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
+            disp(ackframe)
+            WriteToChannel(Channel, ackframe)
         end
          
         % I single parity är det 1 bit bara       
-        if mod(sum(Y(1:length(a)-1))) == p && Y(1) == R_next         
+        %if mod(sum(Y(1:length(a)-1))) == p && Y(1) == R_next         
             
-            R_next = mod(R_next,1);
-            ackframe = R_next;
-            WriteToChannel(Channel,ackframe)
-        end
+         %   R_next = mod(R_next,1);
+          %  ackframe = R_next;
+          %  WriteToChannel(Channel,ackframe)
+        %end
         
         
         
