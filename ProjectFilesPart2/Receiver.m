@@ -62,30 +62,23 @@ while ipacket<=nPackets
     Y = ReadFromChannel(Channel, ExpectedLengtOfFrame);
     
     if ~isnan(Y) %if data received
-        
+        disp(['Received packet no.', num2str(ipacket)])
         %2-3 if data correctly received send ack and store data (if not received earlier)       
         %implement rest of receiver side of stop-and-wait ARQ protocol below (inlc. error check etc.)
         %send ack by using: WriteToChannel(Channel,ackframe) where ackframe is your ackknowledgement frame
         %Complete the function [bError] = ErrorCheck(data,TypeOfErrorCheck) for error check of received data  
 
         %p=Y(length(Y));
-        if ErrorCheck(Y,'CRC') && Y(1)== R_next
+        disp([num2str(ErrorCheck(Y,'CRC')), ' ', num2str(Y(1)==R_next)])
+        if (ErrorCheck(Y,'CRC')) && (Y(1) == R_next)
+            disp('Enter IF')
             R_next = bitxor(R_next,1);
-            disp(R_next)
+            disp(['R_next ', num2str(R_next)])
             ackframe = [R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
             disp(ackframe)
+            ipacket = ipacket+1;
             WriteToChannel(Channel, ackframe)
         end
-         
-        % I single parity är det 1 bit bara       
-        %if mod(sum(Y(1:length(a)-1))) == p && Y(1) == R_next         
-            
-         %   R_next = mod(R_next,1);
-          %  ackframe = R_next;
-          %  WriteToChannel(Channel,ackframe)
-        %end
-        
-        
         
     end
     

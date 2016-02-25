@@ -66,12 +66,10 @@ while ipacket<=size(packages,1)
     %  header and trailer...)
     % You have to complete the function pkg2frame
     %disp(packet)
-    frame=pkg2frame(packet,S_last,'CRC');
     S_last=bitxor(S_last,1);
-   
+    frame=pkg2frame(packet,S_last,'CRC');
+
     %3 Send current frame
-    
-    
     
     
     %4-6 stop and wait for ack: implement the rest of the transmitter side
@@ -85,19 +83,19 @@ while ipacket<=size(packages,1)
         WriteToChannel(Channel, frame)
         disp('skickade')
         tic
-        timeout= 2;
+        timeout= 2;%0.1;
         while toc < timeout 
             ExpectedLengthOfFrame = 2;
             Y = ReadFromChannel(Channel, ExpectedLengthOfFrame);
             if ~isnan(Y) %if data received
                 disp('Fick något')
-                disp(Y')
-                isequal(Y',[bitxor(S_last,1) bitxor(S_last,1)])
+                disp(Y');
+                %isequal(Y',[bitxor(S_last,1) bitxor(S_last,1)])
                 disp([bitxor(S_last,1) bitxor(S_last,1)])
                 if isequal(Y',[bitxor(S_last,1) bitxor(S_last,1)]) % If no error detected and corr seq number.
                     
-                    sent=1
-                    
+                    sent=1;
+                    %S_last=bitxor(S_last,1)
                 end
                 break;
             end

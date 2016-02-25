@@ -21,8 +21,9 @@ function frame=pkg2frame(packet,header,type)
 %------------- BEGIN CODE --------------
  
 
-% Metoder för att kolla error, val anges 
-% när man anropar funktionen
+%=======================================
+%===== DENNA FUNGERAR SOM DEN SKA! =====
+%=======================================
 
 switch type
     case 'sp'   % Single parity check codes
@@ -32,8 +33,7 @@ switch type
          %while sum(a(1:len(d)-3)) != 0
            % ind = find(d)
             %ind=ind(1)   
-             %   d(ind:ind+3) = bitxor(d(ind:ind+3),g);   
-                
+             %   d(ind:ind+3) = bitxor(d(ind:ind+3),g);             
            % end
         
     case 'BP'   % Binary polynomials   
@@ -44,31 +44,22 @@ switch type
         %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
         g=[1 0 1 1];
         d=[header packet];
-        %i=[1 1 0 1 0 0 1 1 1 0 1 1 0 0];
-        %q=[1 1 1 1 0 0 0 1 1 1 1 1 0 0];
         pl=length(g)-1;
         nd=[d zeros(1,pl)];
 
         ind=0;
-        
         if sum(d) == 0 % Ett hax för att få bara nollor att fungera...
-            ind=length(d)-pl+1;
-        end
-        
-        while ind <= length(d)-pl        
-            ind = find(nd);
-            ind=ind(1);
-            nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g);
-    
-        end
-
-        p=nd(end-pl+1:end);
-        
-        
+            p=nd(end-pl+1:end);
+        else
+            while ind <= length(d)-pl        
+                ind = find(nd);
+                ind=ind(1);
+                nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g);
+            end
+            p=nd(end-pl+1:end);
+        end     
 end
 
-
-
- frame=[header packet p];                  % construct frame including header and error check bits
+frame=[header packet p];                  % construct frame including header and error check bits
 
 end

@@ -21,6 +21,12 @@ function [bError] = ErrorCheck(data,TypeOfErrorCheck)
 
 %------------- BEGIN CODE --------------
 
+
+%=======================================
+%===== DENNA FUNGERAR SOM DEN SKA! =====
+%=======================================
+
+
 switch TypeOfErrorCheck
     case 'parity'
        % bError=;        %Implement error check here
@@ -32,15 +38,15 @@ switch TypeOfErrorCheck
         ind=0;
         disp(data)
         if sum(data) == 0 % Ett hax för att få bara nollor att fungera...
-            ind=length(data);
-        end
-        
-        while ind <= length(data)-pl
-            ind = find(nd);
-            ind=ind(1);
-            nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g);
-        end
-        p=nd(end-pl+1:end);
+            p=nd(end-pl+1:end);
+        else
+            while ind <= length(data)-pl        
+                ind = find(nd);
+                ind=ind(1);
+                nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g);
+            end
+            p=nd(end-pl+1:end);
+        end 
         
         % Använd isequal istället, har för mig att 
         % den hanterar vektorer bättre
