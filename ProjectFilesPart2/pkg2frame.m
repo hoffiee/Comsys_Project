@@ -25,6 +25,8 @@ function frame=pkg2frame(packet,header,type)
 %===== DENNA FUNGERAR SOM DEN SKA! =====
 %=======================================
 
+type = 'CRC';
+
 switch type
     case 'sp'   % Single parity check codes
         p = mod(sum([header packet]),2);
@@ -43,23 +45,24 @@ switch type
     case 'CRC'  % Cyclic redundancy codes CRC
         %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
         g=[1 0 1 1];
-        d=[header packet];
+        d=[header header header packet];
+        %d=[1 1 0 1 0 0 1 1 1 0 1 1 0 0] Test, P= 1 0 0
         pl=length(g)-1;
         nd=[d zeros(1,pl)];
 
-        ind=0;
         if sum(d) == 0 % Ett hax för att få bara nollor att fungera...
             p=nd(end-pl+1:end);
         else
-            while ind <= length(d)-pl        
-                ind = find(nd);
-                ind=ind(1);
+            %disp(~isempty(find(nd,1)))
+            %disp(length(nd))
+            while ~isempty(find(nd,1)) && find(nd,1) <= length(d)    
+                ind = find(nd,1);
+                %disp(['ind:', num2str(ind)])
                 nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g);
             end
             p=nd(end-pl+1:end);
         end     
 end
 
-frame=[header packet p];                  % construct frame including header and error check bits
-
+frame=[d p];                  % construct frame including header and error check bits
 end

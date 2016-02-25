@@ -54,28 +54,32 @@ R_next = 0;                               %initialize next frame expected (seque
 
 while ipacket<=nPackets 
     
-    % med det g vi har i CRC nu så har vi 1+3 bitar 
+    % med det g vi har i CRC nu så har vi 3+3 bitar 
     
     %1 check for data
-    nBitsOverhead = 4;%[]; %define the number of overhead bits here!
+    nBitsOverhead = 6;%[]; %define the number of overhead bits here!
     ExpectedLengtOfFrame = nBitsPacket+nBitsOverhead; %this is the length of the frame we should receive
     Y = ReadFromChannel(Channel, ExpectedLengtOfFrame);
     
     if ~isnan(Y) %if data received
-        disp(['Received packet no.', num2str(ipacket)])
+        disp(['Received packet no.', num2str(ipacket),' med seq no.', num2str(Y(1))])
         %2-3 if data correctly received send ack and store data (if not received earlier)       
         %implement rest of receiver side of stop-and-wait ARQ protocol below (inlc. error check etc.)
         %send ack by using: WriteToChannel(Channel,ackframe) where ackframe is your ackknowledgement frame
         %Complete the function [bError] = ErrorCheck(data,TypeOfErrorCheck) for error check of received data  
 
         %p=Y(length(Y));
-        disp([num2str(ErrorCheck(Y,'CRC')), ' ', num2str(Y(1)==R_next)])
-        if (ErrorCheck(Y,'CRC')) && (Y(1) == R_next)
-            disp('Enter IF')
+        %disp(Y)
+        %disp([num2str(ErrorCheck(Y,'CRC')), ' ', num2str(Y(1)==R_next)])
+        
+        infopackets=[];
+        
+        if (ErrorCheck(Y,'CRC')) && isequal(Y(1:3)',[R_next R_next R_next])
+            %disp('Enter IF')
+            infopackets=[infopackets Y(2:end-3)];
             R_next = bitxor(R_next,1);
-            disp(['R_next ', num2str(R_next)])
-            ackframe = [R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
-            disp(ackframe)
+            ackframe = [R_next R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
+            disp(['Ackframe: ', num2str(ackframe(1)), ' ', num2str(ackframe(2)), ' ', num2str(ackframe(3))])
             ipacket = ipacket+1;
             WriteToChannel(Channel, ackframe)
         end
