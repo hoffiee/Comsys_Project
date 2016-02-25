@@ -81,17 +81,17 @@ while ipacket<=size(packages,1)
     
     while ~sent
         WriteToChannel(Channel, frame)
-        disp(['skickade packet no.', num2str(ipacket), ' med S_last: ',num2str(S_last)])
+        %disp(['skickade packet no.', num2str(ipacket), ' med S_last: ',num2str(S_last)])
         tic
-        timeout= 0.8;
+        timeout= 0.08;
         while toc < timeout 
-            ExpectedLengthOfFrame = 3; % 1 ack 1 cbit
+            ExpectedLengthOfFrame = 3; % 1 ack 2 cbit
             Y = ReadFromChannel(Channel, ExpectedLengthOfFrame);
             if ~isnan(Y) %if data received
-                disp('Ack')
-                disp(Y')                
+                %disp('Ack')
+                %disp(Y')                
                 %isequal(Y',[bitxor(S_last,1) bitxor(S_last,1)])
-                disp(['S_last', num2str(bitxor(S_last,1)), num2str(bitxor(S_last,1), num2str(bitxor(S_last)))])
+                %disp(['S_last', num2str(bitxor(S_last,1)), num2str(bitxor(S_last,1)), num2str(bitxor(S_last,1))])
                 if isequal(Y',[bitxor(S_last,1) bitxor(S_last,1), bitxor(S_last,1)]) % If no error detected and corr seq number.           
                     sent=1;
                     %S_last=bitxor(S_last,1)

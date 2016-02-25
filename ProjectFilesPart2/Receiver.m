@@ -62,7 +62,8 @@ while ipacket<=nPackets
     Y = ReadFromChannel(Channel, ExpectedLengtOfFrame);
     
     if ~isnan(Y) %if data received
-        disp(['Received packet no.', num2str(ipacket),' med seq no.', num2str(Y(1))])
+        %disp(['Received packet no.', num2str(ipacket),' med seq no.', num2str(Y(1))])
+        
         %2-3 if data correctly received send ack and store data (if not received earlier)       
         %implement rest of receiver side of stop-and-wait ARQ protocol below (inlc. error check etc.)
         %send ack by using: WriteToChannel(Channel,ackframe) where ackframe is your ackknowledgement frame
@@ -70,17 +71,19 @@ while ipacket<=nPackets
 
         %p=Y(length(Y));
         %disp(Y)
-        %disp([num2str(ErrorCheck(Y,'CRC')), ' ', num2str(Y(1)==R_next)])
+        %disp([num2str(ErrorCheck(Y,'CRC')), ' ', num2str(Y(1)==R_next)])  
         
-        infopackets=[];
+        ackframe = [R_next R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
         
-        if (ErrorCheck(Y,'CRC')) && isequal(Y(1:3)',[R_next R_next R_next])
-            %disp('Enter IF')
-            infopackets=[infopackets Y(2:end-3)];
+        if (ErrorCheck(Y,'CRC')) && isequal(Y(1:3)',[R_next R_next R_next])            
+            
+            infopackets(ipacket,:)=Y(4:end-3);
             R_next = bitxor(R_next,1);
             ackframe = [R_next R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
-            disp(['Ackframe: ', num2str(ackframe(1)), ' ', num2str(ackframe(2)), ' ', num2str(ackframe(3))])
+            %disp(['Ackframe: ', num2str(ackframe(1)), ' ', num2str(ackframe(2)), ' ', num2str(ackframe(3))])
             ipacket = ipacket+1;
+            WriteToChannel(Channel, ackframe)
+        elseif ~isequal(Y(1:3)',[R_next R_next R_next])
             WriteToChannel(Channel, ackframe)
         end
         
@@ -88,6 +91,10 @@ while ipacket<=nPackets
     
 end
 
+%infopackets=infopackets';
+disp(size(infopackets))
+disp(infopackets(1,:))
+%disp(length(Y(4:end-3)))
 %------------- DO NOT EDIT HERE --------------
 %4. terminate connection 
 TerminateConnection('Rx', Channel, ExpectedLengtOfFrame, R_next, ackframe);
