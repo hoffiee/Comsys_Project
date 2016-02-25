@@ -83,7 +83,7 @@ while ipacket<=size(packages,1)
         WriteToChannel(Channel, frame)
         %disp(['skickade packet no.', num2str(ipacket), ' med S_last: ',num2str(S_last)])
         tic
-        timeout= 0.08;
+        timeout= 0.05;
         while toc < timeout 
             ExpectedLengthOfFrame = 3; % 1 ack 2 cbit
             Y = ReadFromChannel(Channel, ExpectedLengthOfFrame);
@@ -100,10 +100,7 @@ while ipacket<=size(packages,1)
                 break;
             end
         end
-        
-
     end
-    
 end
     
 

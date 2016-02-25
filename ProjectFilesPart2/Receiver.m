@@ -76,8 +76,8 @@ while ipacket<=nPackets
         ackframe = [R_next R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
         
         if (ErrorCheck(Y,'CRC')) && isequal(Y(1:3)',[R_next R_next R_next])            
-            
-            infopackets(ipacket,:)=Y(4:end-3);
+            splitData=Y(4:end-3);
+            infopackets(ipacket,:)=splitData;
             R_next = bitxor(R_next,1);
             ackframe = [R_next R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
             %disp(['Ackframe: ', num2str(ackframe(1)), ' ', num2str(ackframe(2)), ' ', num2str(ackframe(3))])
@@ -85,20 +85,20 @@ while ipacket<=nPackets
             WriteToChannel(Channel, ackframe)
         elseif ~isequal(Y(1:3)',[R_next R_next R_next])
             WriteToChannel(Channel, ackframe)
-        end
-        
-    end
-    
+        end 
+    end    
 end
 
 %infopackets=infopackets';
 disp(size(infopackets))
 disp(infopackets(1,:))
 %disp(length(Y(4:end-3)))
+disp(reshape(infopackets,1,[]))
+disp(length(reshape(infopackets,1,[])))
+disp(sum(reshape(infopackets,1,[])))
 %------------- DO NOT EDIT HERE --------------
 %4. terminate connection 
 TerminateConnection('Rx', Channel, ExpectedLengtOfFrame, R_next, ackframe);
 %function output
 datastream=reshape(infopackets, 1, []);
 end
-
