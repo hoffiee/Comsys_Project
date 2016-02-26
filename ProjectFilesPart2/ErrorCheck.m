@@ -21,16 +21,45 @@ function [bError] = ErrorCheck(data,TypeOfErrorCheck)
 
 %------------- BEGIN CODE --------------
 
-
-%=======================================
-%===== DENNA FUNGERAR SOM DEN SKA! =====
-%=======================================
-
-TypeOfErrorCheck = 'CRC'; % För att fixa TerminateConnection...
-
 switch TypeOfErrorCheck
     case 'parity'
-       % bError=;        %Implement error check here
+        p = mod(sum(data(1:end-1)),2);
+        
+        if isequal(p,data(end))
+            bError = true;
+        else
+            bError = false;
+        end
+    case 'IC'
+        
+        d=data(1:end-16)';
+        
+        % the result from bi2de need to be flipped in order for the
+        % bits to come in the right order.
+        sumOfData=sum(bi2de(fliplr(vec2mat(d,16))));
+        % This takes modulo FFFF = 
+        modulo=mod(sumOfData,2^16-1);
+        
+        % negate bits
+        negBits=mod(2^16-1,modulo);
+
+        % This is the parity bits, though they aren't at exactly 16 bits.
+        % This is handled below
+        p=fliplr(de2bi(negBits));
+        % The zeros adds zeros in front due to de2bi doesn't return it to a
+        p=[zeros(1,16-length(p)) p];
+        %disp(p)
+        
+                % La till +1 för att se de fyra sista med
+        %disp(p)
+        
+        %disp(data(length(data)-15:end))
+        if isequal(p,data(length(data)-15:end)')
+            bError = true;
+        else
+            bError = false;
+        end
+        
     case 'CRC'
         %g=[1 0 1 1];
         %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
@@ -61,11 +90,8 @@ switch TypeOfErrorCheck
         else
             bError = false;
         end
-        
-    otherwise
-        error('Invalid error check!')
-        
+    %otherwise
+      %  error('Invalid error check!')      
 end
-
 end
 

@@ -1,4 +1,4 @@
-function frame=pkg2frame(packet,header,type)
+function frame=pkg2frame(packet,header)
 %<pkg2frame> create info frame by adding header and error check bits (eg. parity bit)
 %
 %   Function inputs:
@@ -25,28 +25,36 @@ function frame=pkg2frame(packet,header,type)
 %===== DENNA FUNGERAR SOM DEN SKA! =====
 %=======================================
 
-type = 'CRC';
+d=[header packet];
 
-switch type
-    case 'sp'   % Single parity check codes
-        p = mod(sum([header packet]),2);
+TypeOfErrorCheck='IC';
+
+switch TypeOfErrorCheck
+    case 'parity'   % Single parity check codes
+        p = mod(sum(d),2);
         
     case 'IC' % Internet Checksum
-         %while sum(a(1:len(d)-3)) != 0
-           % ind = find(d)
-            %ind=ind(1)   
-             %   d(ind:ind+3) = bitxor(d(ind:ind+3),g);             
-           % end
+       
+        % the result from bi2de need to be flipped in order for the
+        % bits to come in the right order.
+        sumOfData=sum(bi2de(fliplr(vec2mat(d,16))));
+        % This takes modulo FFFF = 
+        modulo=mod(sumOfData,2^16-1);
         
-    case 'BP'   % Binary polynomials   
-        
-    case 'BPD'  % Binary polynomial divison
+        % negate bits
+        negBits=mod(2^16-1,modulo);
+
+        % This is the parity bits, though they aren't at exactly 16 bits.
+        % This is handled below
+        p=fliplr(de2bi(negBits));
+        % The zeros adds zeros in front due to de2bi doesn't return it to a
+        p=[zeros(1,16-length(p)) p];
         
     case 'CRC'  % Cyclic redundancy codes CRC
         %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
         %g=[1 0 1 1];
         g=[1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1];
-        d=[header packet];
+        
         pl=length(g)-1;
         nd=[d zeros(1,pl)];
 

@@ -51,7 +51,7 @@ if mod(nPackets,1)>0
 end
 packages = reshape(bitStream,nPackets,nBitsPacket);
 ipacket = 1;         %initialize packet counter
-S_last = 1;          %initialize sequence number for transmitter
+S_last = 0;          %initialize sequence number for transmitter
 
 %------------- BEGIN EDITING HERE --------------
 
@@ -66,8 +66,7 @@ while ipacket<=size(packages,1)
     %  header and trailer...)
     % You have to complete the function pkg2frame
     %disp(packet)
-    S_last=bitxor(S_last,1);
-    frame=pkg2frame(packet,S_last,'CRC');
+    frame=pkg2frame(packet,S_last);
 
     %3 Send current frame
     
@@ -83,33 +82,30 @@ while ipacket<=size(packages,1)
         WriteToChannel(Channel, frame)
         %disp(['skickade packet no.', num2str(ipacket), ' med S_last: ',num2str(S_last)])
         tic
-        timeout= 0.05;
+        timeout= 0.0029;
         while toc < timeout 
-            ExpectedLengthOfFrame = 3; % 1 ack 2 cbit
+            ExpectedLengthOfFrame = 2; % 1 ack 1 cbit
             Y = ReadFromChannel(Channel, ExpectedLengthOfFrame);
             if ~isnan(Y) %if data received
                 %disp('Ack')
                 %disp(Y')                
                 %isequal(Y',[bitxor(S_last,1) bitxor(S_last,1)])
                 %disp(['S_last', num2str(bitxor(S_last,1)), num2str(bitxor(S_last,1)), num2str(bitxor(S_last,1))])
-                if isequal(Y',[bitxor(S_last,1) bitxor(S_last,1), bitxor(S_last,1)]) % If no error detected and corr seq number.           
+                if isequal(Y',[bitxor(S_last,1) bitxor(S_last,1)]) % If no error detected and corr seq number.           
                     sent=1;
                     %S_last=bitxor(S_last,1)
                     ipacket=ipacket+1;
+                    S_last=bitxor(S_last,1);
                 end
                 break;
             end
         end
     end
 end
-    
-
 
 %------------- STOP EDITING HERE --------------
 %7 terminate connection
 % dont shut down until the receiver has confirmed reception of last ack
 %TerminateConnection('Tx', Channel, nBitsPacket, S_last);
 end
-%--------------- END CODE ----------------
-
-
+%--------------- END CODE ---------------------

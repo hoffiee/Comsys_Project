@@ -56,7 +56,7 @@ while ipacket<=nPackets
     
     % med det g vi har i CRC nu så har vi 3+3 bitar 
     
-    %1 check for data
+    %1 check for data, 16 bits for both CRC-16? and IC
     nBitsOverhead = 1+16;%[]; %define the number of overhead bits here!
     ExpectedLengtOfFrame = nBitsPacket+nBitsOverhead; %this is the length of the frame we should receive
     Y = ReadFromChannel(Channel, ExpectedLengtOfFrame);
@@ -73,16 +73,16 @@ while ipacket<=nPackets
         %disp(Y)
         %disp([num2str(ErrorCheck(Y,'CRC')), ' ', num2str(Y(1)==R_next)])  
         
-        ackframe = [R_next R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
+        ackframe = [R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
         
         % The sequence number is getting errorchecked within the
         % errorcheck, therefore no controlbits is needed at this point.
-        if (ErrorCheck(Y,'CRC')) && isequal(Y(1),R_next)            
+        if (ErrorCheck(Y,'IC')) && isequal(Y(1),R_next)            
             splitData=Y(2:end-16);
             %disp(Y(4:end-3));
             infopackets(ipacket,:)=splitData;
             R_next = bitxor(R_next,1);
-            ackframe = [R_next R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
+            ackframe = [R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
             %disp(['Ackframe: ', num2str(ackframe(1)), ' ', num2str(ackframe(2)), ' ', num2str(ackframe(3))])
             ipacket = ipacket+1;
             WriteToChannel(Channel, ackframe)
