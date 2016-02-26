@@ -108,7 +108,7 @@ end
 %------------- STOP EDITING HERE --------------
 %7 terminate connection
 % dont shut down until the receiver has confirmed reception of last ack
-TerminateConnection('Tx', Channel, nBitsPacket, S_last);
+%TerminateConnection('Tx', Channel, nBitsPacket, S_last);
 end
 %--------------- END CODE ----------------
 

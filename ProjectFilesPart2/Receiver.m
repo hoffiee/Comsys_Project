@@ -57,7 +57,7 @@ while ipacket<=nPackets
     % med det g vi har i CRC nu så har vi 3+3 bitar 
     
     %1 check for data
-    nBitsOverhead = 6;%[]; %define the number of overhead bits here!
+    nBitsOverhead = 1+16;%[]; %define the number of overhead bits here!
     ExpectedLengtOfFrame = nBitsPacket+nBitsOverhead; %this is the length of the frame we should receive
     Y = ReadFromChannel(Channel, ExpectedLengtOfFrame);
     
@@ -75,30 +75,33 @@ while ipacket<=nPackets
         
         ackframe = [R_next R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
         
-        if (ErrorCheck(Y,'CRC')) && isequal(Y(1:3)',[R_next R_next R_next])            
-            splitData=Y(4:end-3);
+        % The sequence number is getting errorchecked within the
+        % errorcheck, therefore no controlbits is needed at this point.
+        if (ErrorCheck(Y,'CRC')) && isequal(Y(1),R_next)            
+            splitData=Y(2:end-16);
+            %disp(Y(4:end-3));
             infopackets(ipacket,:)=splitData;
             R_next = bitxor(R_next,1);
             ackframe = [R_next R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
             %disp(['Ackframe: ', num2str(ackframe(1)), ' ', num2str(ackframe(2)), ' ', num2str(ackframe(3))])
             ipacket = ipacket+1;
             WriteToChannel(Channel, ackframe)
-        elseif ~isequal(Y(1:3)',[R_next R_next R_next])
+        elseif ~isequal(Y(1),R_next)
             WriteToChannel(Channel, ackframe)
         end 
     end    
 end
 
 %infopackets=infopackets';
-disp(size(infopackets))
-disp(infopackets(1,:))
+%disp(size(infopackets))
+%disp(infopackets(1,:))
 %disp(length(Y(4:end-3)))
-disp(reshape(infopackets,1,[]))
-disp(length(reshape(infopackets,1,[])))
-disp(sum(reshape(infopackets,1,[])))
+%disp(reshape(infopackets,1,[]))
+%disp(length(reshape(infopackets,1,[])))
+%disp(sum(reshape(infopackets,1,[])))
 %------------- DO NOT EDIT HERE --------------
 %4. terminate connection 
-TerminateConnection('Rx', Channel, ExpectedLengtOfFrame, R_next, ackframe);
+%TerminateConnection('Rx', Channel, ExpectedLengtOfFrame, R_next, ackframe);
 %function output
 datastream=reshape(infopackets, 1, []);
 end

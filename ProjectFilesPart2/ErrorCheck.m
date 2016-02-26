@@ -32,15 +32,13 @@ switch TypeOfErrorCheck
     case 'parity'
        % bError=;        %Implement error check here
     case 'CRC'
-        g=[1 0 1 1];
+        %g=[1 0 1 1];
+        %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
+        g=[1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1];
         pl=length(g)-1;
         d=data(1:end-pl)';
-        %data(1:end-pl)      
         nd=[d zeros(1,pl)]; % la till ' för att ändra matrisen till en vektor 
         
-        %disp(nd)
-        %ind=0;
-        %disp(nd)
         if sum(d) == 0 % Ett hax för att få bara nollor att fungera...
             p=nd(end-pl+1:end);
         else
