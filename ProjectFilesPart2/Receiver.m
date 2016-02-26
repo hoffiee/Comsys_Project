@@ -68,16 +68,13 @@ while ipacket<=nPackets
         %implement rest of receiver side of stop-and-wait ARQ protocol below (inlc. error check etc.)
         %send ack by using: WriteToChannel(Channel,ackframe) where ackframe is your ackknowledgement frame
         %Complete the function [bError] = ErrorCheck(data,TypeOfErrorCheck) for error check of received data  
-
-        %p=Y(length(Y));
-        %disp(Y)
-        %disp([num2str(ErrorCheck(Y,'CRC')), ' ', num2str(Y(1)==R_next)])  
+ 
         
         ackframe = [R_next R_next]; % Vi har en extra bit som kontrollbit på R_Next med
         
         % The sequence number is getting errorchecked within the
         % errorcheck, therefore no controlbits is needed at this point.
-        if (ErrorCheck(Y,'IC')) && isequal(Y(1),R_next)            
+        if (ErrorCheck(Y,'CRC')) && isequal(Y(1),R_next)            
             splitData=Y(2:end-16);
             %disp(Y(4:end-3));
             infopackets(ipacket,:)=splitData;

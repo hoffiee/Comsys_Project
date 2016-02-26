@@ -27,7 +27,7 @@ function frame=pkg2frame(packet,header)
 
 d=[header packet];
 
-TypeOfErrorCheck='IC';
+TypeOfErrorCheck='CRC';
 
 switch TypeOfErrorCheck
     case 'parity'   % Single parity check codes

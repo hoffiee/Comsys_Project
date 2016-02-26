@@ -47,7 +47,6 @@ mat=vec2mat(d,16)
 % bi2de ser allting tvärtom mot vad vi brukar, därav fliplr
 a=bi2de(fliplr(mat))
 
-
 b=sum(a)
 % SUmman ska bli 19C5F = 105567 
 
@@ -64,14 +63,6 @@ p=[zeros(1,16-length(p)) p]
 csuppose=[0 1 1 0 0 0 1 1 1 0 0 1 1 1 1 1];
 isequal(p,csuppose)
 % C ska bli 0110 0011 1001 1111
-
-
-
-
-
-
-
-
 
 
 
@@ -115,11 +106,12 @@ fwrite(Channel, TransmissionAttempts, 'int8')
 pause(0.1)
 fclose(Channel);
 
-
 ackframe = [1 1]
 tic
 WriteToChannel(Channel, ackframe)
 Y = ReadFromChannel(Channel, 2);
 toc
+
+
 
 %Aja fungerar inte
