@@ -27,17 +27,17 @@ Ns=6;      % Specify the length of the transmit pulse here (scalar)
 
 %1. Convert bits to symbols
 const = [0 1];              % Specify constellation here (vector)
-a = [-5 5];                 % Convert the bits in vector b to symbols in vector a
+symb = [-5 5];                 % Convert the bits in vector b to symbols in vector a
 
 % This maps the amplitude for k signal. M=2
 for k=1:M
-    ak(b==const(k))=a(k); % loops through b and creates a new vector ak with the corresponding symbol
+    a(b==const(k))=symb(k); % loops through b and creates a new vector ak with the corresponding symbol
 end
 
 %2. Pulse Amplitude Modulation
 % Creates a rectangular pulse with Ns samples
 % for each symbol
-s=rectpulse(ak,Ns);
+s=rectpulse(a,Ns);
 
 %********** DON'T EDIT FROM HERE ON ****************
 % plot Tx signals

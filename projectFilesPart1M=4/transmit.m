@@ -14,24 +14,29 @@ function s = transmit(b,plot_flag)
 
 %********** Begin program, EDIT HERE
 
-M=4;
-Ns=51;     % 50 Samples have been tested and we receive a BER under 10e-3
+M=4;    
+Ns=51;     % 51 Samples have been tested and we receive a BER under 10e-3
 
-%1. Convert bits to symbols
-a=[-5 -5/3 5/3 5];
+
+% Specify Symbol constallation
+symb=[-5 -5/3 5/3 5];
 m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
-ak=zeros(1,length(b)/log2(M));
+
+
+% Checks two bits and compares them to the 
+% specified constallations, adds the
+% corresponding symbol to a
 for k=0:length(b)/log2(M)-1
     for i=1:M
         if isequal([b(2*k+1) b(2*k+2)],m{i})
-            ak(k+1)=a(i);
+            a(k+1)=symb(i);
             break
         end
     end
 end
 
 %2. Pulse Amplitude Modulation 
-s=rectpulse(ak,Ns);
+s=rectpulse(a,Ns);
 
 %********** DON'T EDIT FROM HERE ON ****************
 % plot Tx signals

@@ -15,8 +15,13 @@ function [b_hat] = receive(r,plot_flag)
 
 %********** Begin program EDIT HERE
 
-Ns=51; 
-boundaries = ([-5 -5/3 5/3 5]);
+M=4;
+Ns=51;                      % 51 Samples have been tested and we receive a BER under 10e-3
+
+
+% Specify Symbol constallation
+symb = ([-5 -5/3 5/3 5]);
+m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
 
 %1. filter with Rx filter (Matched filter)
 MF=rectpulse(1,Ns);
@@ -29,20 +34,18 @@ y_sampled = y(Ns:Ns:length(y))./Eh;             % Compute the sampled signal y_s
 %3. Make decision on which symbol was transmitted
 %Minimum-distance-receiver
 for i=1:length(y_sampled)
-    for j=1:length(boundaries)
-       D(j)= (abs(y_sampled(i)-boundaries(j)))^2; %Calculate the distance between chosen value and the constellations
+    for j=1:length(symb)
+       D(j)= (abs(y_sampled(i)-symb(j)))^2; %Calculate the distance between chosen value and the constellations
     end
     [M,I]=min(D);    %Decides which constellation that matches the value. (minimum distance)
-    a_hat(i)=boundaries(I);
+    a_hat(i)=symb(I);
 end                       
    
+
 %Symbol to bits for M=4
-a=[-5 -5/3 5/3 5];
-M=4;
-m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
 for i=1:length(a_hat)
    for j=1:M
-       if a_hat(i) == a(j)
+       if a_hat(i) == symb(j)
           b_hat(2*(i-1)+1)=m{j}(1);
           b_hat(2*(i-1)+2)=m{j}(2);
        end
