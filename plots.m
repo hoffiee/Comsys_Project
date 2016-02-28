@@ -84,16 +84,26 @@ text(2*5/3,-0.7,'2c','FontSize',14,'HorizontalAlignment','center')
 
 %% Plotta transmit pulse
 
-Nsm2=6;
 Nsm4=51;
-
-figure(1)
-stem(rectpulse(1,Nsm2))
-title('g(t) for M=2')
 
 
 figure(2)
 stem(rectpulse(1,Nsm4))
-title('g(t) for M=4')
-axis([-2 Nsm4+9 0 1.1])
+title('g[n] for M=4')
+axis([-2 Nsm4+3 0 1.1])
+xlabel('samples [n]')
+ylabel('Amplitude')
+set(gcf,'color','w')
+hold on
+plot([1 1],[0 1],'black')
+plot([Nsm4 Nsm4],[0 1],'black')
+plot([1 Nsm4],[1 1],'black')
+
+%% Plotta Receiver filter shape
+
+g=rectpulse(1,10)'
+
+stem(filter(g,1,g))
+%% plotta receiver filter output with down sampling
+
 
