@@ -16,11 +16,11 @@ function [b_hat] = receive(r,plot_flag)
 %********** Begin program EDIT HERE
 
 M=4;
-Ns=51;                      % 51 Samples have been tested and we receive a BER under 10e-3
+Ns=51;    % 51 Samples have been tested and we receive a BER under 10e-3
 
 
-% Specify Symbol constallation
-symb = ([-5 -5/3 5/3 5]);
+% Specify Symbol constallation and corresponding bits
+symb = [-5 -5/3 5/3 5];
 m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
 
 %1. filter with Rx filter (Matched filter)
@@ -33,16 +33,18 @@ y_sampled = y(Ns:Ns:length(y))./Eh;             % Compute the sampled signal y_s
 
 %3. Make decision on which symbol was transmitted
 %Minimum-distance-receiver
-for i=1:length(y_sampled)
+a_hat=zeros(1,length(y_sampled));   % Preallocate
+D=zeros(1,length(symb));            % Preallocate
+for i=1:length(y_sampled) 
     for j=1:length(symb)
        D(j)= (abs(y_sampled(i)-symb(j)))^2; %Calculate the distance between chosen value and the constellations
     end
-    [M,I]=min(D);    %Decides which constellation that matches the value. (minimum distance)
+    [dispose,I]=min(D);    %Decides which constellation that matches the value. (minimum distance)
     a_hat(i)=symb(I);
 end                       
-   
 
 %Symbol to bits for M=4
+b_hat=-ones(1,2*length(a_hat)); % Preallocate
 for i=1:length(a_hat)
    for j=1:M
        if a_hat(i) == symb(j)

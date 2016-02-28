@@ -26,6 +26,8 @@ m{1}=[0 0]; m{2}=[0 1]; m{3}=[1 1]; m{4}=[1 0];
 % Checks two bits and compares them to the 
 % specified constallations, adds the
 % corresponding symbol to a
+
+a=zeros(1,length(b)/log2(M)); % Preallocate
 for k=0:length(b)/log2(M)-1
     for i=1:M
         if isequal([b(2*k+1) b(2*k+2)],m{i})
