@@ -34,16 +34,19 @@ switch TypeOfErrorCheck
 
         % Pads with zeros so that its a multiplication of 16
         pd=[zeros(1,ceil(numel(data')/16)*16-length(data')) data'];
+        
+        % Shapes the data into X rows with 16 bits
         d=reshape(pd,16,[])';
         
-
+        % Takes the sum of each row
         nsum=sum(bi2de(d,'left-msb'));
         
+        % Takes modulo FFFF 
         modulo=mod(nsum,2^16-1);
         
-        negBits=~mod(-modulo,2^16-1);
+        negBits=mod(-modulo,2^16-1);
        
-        if negBits;
+        if ~negBits;
             bError = true;
         else
             bError = false;

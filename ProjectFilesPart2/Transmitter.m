@@ -55,43 +55,39 @@ S_last = 0;          %initialize sequence number for transmitter
 
 %------------- BEGIN EDITING HERE --------------
 
-%error('You must complete the Transmitter function!!!!!')
-
 while ipacket<=size(packages,1)
     
     %1 retrieve current packet according to packet counter
     packet = packages(ipacket,:);
     
-    %2 embedd packet in frame: implement the code to create frames (add
-    %  header and trailer...)
-    % You have to complete the function pkg2frame
-    %disp(packet)
+    %2 embedd packet in frame: 
     frame=pkg2frame(packet,S_last);
 
-    %3 Send current frame
-    
-    
-    %4-6 stop and wait for ack: implement the rest of the transmitter side
-    %  stop-and-wait ARQ protocol here 
-         
-    % 4. stop and wait
-    
-    sent = 0;
-    
+    sent = false; 
     while ~sent
+        
+        %3 Send current frame
         WriteToChannel(Channel, frame)
         %disp(['skickade packet no.', num2str(ipacket), ' med S_last: ',num2str(S_last)])
-        timeout= 0.005; % För IC
-        %timeout=0.005; % För CRC
+        
+        timeout= 0.005; % This is hopefully little bit bigger than Tprop.
+        % Did test where timeout were lowered untill the total time stopped
+        % getting smaller
+       
+        % 4. stop and wait
         tic
         while toc < timeout 
-            ExpectedLengthOfFrame = 2; % 1 ack 1 cbit
+            ExpectedLengthOfFrame = 2; % 1 ack, 1 cbit
+            % Reads the channel
             Y = ReadFromChannel(Channel, ExpectedLengthOfFrame);
+            
+            
             if ~isnan(Y) %if data received
-                if isequal(Y',[bitxor(S_last,1) bitxor(S_last,1)]) % If no error detected and corr seq number.           
-                    sent=1;
-                    ipacket=ipacket+1;
-                    S_last=bitxor(S_last,1);
+                % If no error detected and corr seq number.  
+                if isequal(Y',[~S_last ~S_last])          
+                    sent = true; % stop the outer while loop
+                    ipacket=ipacket+1; % increment ipacket
+                    S_last=~S_last; % Update S_last
                 end
                 break;
             end
