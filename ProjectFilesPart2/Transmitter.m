@@ -81,7 +81,8 @@ while ipacket<=size(packages,1)
     while ~sent
         WriteToChannel(Channel, frame)
         %disp(['skickade packet no.', num2str(ipacket), ' med S_last: ',num2str(S_last)])
-        timeout= 0.0029;
+        timeout= 0.005; % För IC
+        %timeout=0.005; % För CRC
         tic
         while toc < timeout 
             ExpectedLengthOfFrame = 2; % 1 ack 1 cbit

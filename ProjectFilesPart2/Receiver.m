@@ -57,7 +57,10 @@ while ipacket<=nPackets
     % med det g vi har i CRC nu så har vi 3+3 bitar 
     
     %1 check for data, 16 bits for both CRC-16? and IC
-    nBitsOverhead = 1+16;%[]; %define the number of overhead bits here!
+    hbits=1;
+    pbits=16;
+    
+    nBitsOverhead = hbits+pbits;%[]; %define the number of overhead bits here!
     ExpectedLengtOfFrame = nBitsPacket+nBitsOverhead; %this is the length of the frame we should receive
     Y = ReadFromChannel(Channel, ExpectedLengtOfFrame);
     
@@ -74,8 +77,8 @@ while ipacket<=nPackets
         
         % The sequence number is getting errorchecked within the
         % errorcheck, therefore no controlbits is needed at this point.
-        if (ErrorCheck(Y,'CRC')) && isequal(Y(1),R_next)            
-            splitData=Y(2:end-16);
+        if (ErrorCheck(Y,'IC')) && isequal(Y(1),R_next)            
+            splitData=Y(1+hbits:end-pbits);
             %disp(Y(4:end-3));
             infopackets(ipacket,:)=splitData;
             R_next = bitxor(R_next,1);

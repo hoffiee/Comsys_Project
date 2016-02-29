@@ -31,36 +31,26 @@ switch TypeOfErrorCheck
             bError = false;
         end
     case 'IC'
-        
-        d=data(1:end-16)';
-        
-        % the result from bi2de need to be flipped in order for the
-        % bits to come in the right order.
-        sumOfData=sum(bi2de(fliplr(vec2mat(d,16))));
-        % This takes modulo FFFF = 
-        modulo=mod(sumOfData,2^16-1);
-        
-        % negate bits
-        negBits=mod(2^16-1,modulo);
 
-        % This is the parity bits, though they aren't at exactly 16 bits.
-        % This is handled below
-        p=fliplr(de2bi(negBits));
-        % The zeros adds zeros in front due to de2bi doesn't return it to a
-        p=[zeros(1,16-length(p)) p];
-        %disp(p)
+        % Pads with zeros so that its a multiplication of 16
+        pd=[zeros(1,ceil(numel(data')/16)*16-length(data')) data'];
+        d=reshape(pd,16,[])';
         
-                % La till +1 för att se de fyra sista med
-        %disp(p)
+
+        nsum=sum(bi2de(d,'left-msb'));
         
-        %disp(data(length(data)-15:end))
-        if isequal(p,data(length(data)-15:end)')
+        modulo=mod(nsum,2^16-1);
+        
+        negBits=~mod(-modulo,2^16-1);
+       
+        if negBits;
             bError = true;
         else
             bError = false;
         end
         
     case 'CRC'
+        
         %g=[1 0 1 1];
         %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
         g=[1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1];
@@ -89,9 +79,7 @@ switch TypeOfErrorCheck
             bError = true;
         else
             bError = false;
-        end
-    %otherwise
-      %  error('Invalid error check!')      
+        end    
 end
 end
 

@@ -22,33 +22,34 @@ function frame=pkg2frame(packet,header)
  
 
 %=======================================
-%===== DENNA FUNGERAR SOM DEN SKA! =====
+%===== DENNA FUNGERAR SOM DEN SKA! ===== Nope
 %=======================================
 
 d=[header packet];
 
-TypeOfErrorCheck='CRC';
+TypeOfErrorCheck='IC';
 
 switch TypeOfErrorCheck
     case 'parity'   % Single parity check codes
         p = mod(sum(d),2);
         
     case 'IC' % Internet Checksum
-       
-        % the result from bi2de need to be flipped in order for the
-        % bits to come in the right order.
-        sumOfData=sum(bi2de(fliplr(vec2mat(d,16))));
-        % This takes modulo FFFF = 
+        
+        % This pads with zeros in front
+        pd=[zeros(1,ceil(numel(d)/16)*16-length(d)) d];
+        
+        % this sums everything
+        sumOfData=sum(bi2de(reshape(pd,16,[])','left-msb'));
+        
+        % This takes modulo FFFF 
         modulo=mod(sumOfData,2^16-1);
         
-        % negate bits
-        negBits=mod(2^16-1,modulo);
-
-        % This is the parity bits, though they aren't at exactly 16 bits.
-        % This is handled below
-        p=fliplr(de2bi(negBits));
-        % The zeros adds zeros in front due to de2bi doesn't return it to a
-        p=[zeros(1,16-length(p)) p];
+        % negate bits (flips bits)
+        negBits=mod(-modulo,2^16-1);
+        
+        
+        % This is the parity bits
+        p=de2bi(negBits,16,'left-msb');
         
     case 'CRC'  % Cyclic redundancy codes CRC
         %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];

@@ -29,12 +29,6 @@ p=nd(end-pl+1:end)
 clc
 d=[0 1 0 0 0 1 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 0 0 0 0 0 0 0 0 1 1 0 1 0 0 1 1 1 1 0 1 1 0 1 0 0];
 
-
-if ~(mod(length(d),16)==0)
-   disp('ej jämt delbart med 16')  
-end
-
-
 % Denna paddar automatiskt på en massa nollor i slutet
 mat=vec2mat(d,16)
 
@@ -45,26 +39,34 @@ mat=vec2mat(d,16)
 % === STÄMMER ===
 
 % bi2de ser allting tvärtom mot vad vi brukar, därav fliplr
-a=bi2de(fliplr(mat))
 
-b=sum(a)
 % SUmman ska bli 19C5F = 105567 
 
-c=mod(b,2^16-1)
 % c ska bli 9C60 = 40032
-
-p=mod(2^16-1,c)
 % p = 639F = 25503 = 0110 0011 1001 1111 
-p=fliplr(de2bi(p))
 
 % Denna fyller ut med 0 så att det blir en 16 bitars
-p=[zeros(1,16-length(p)) p]
+sumOfData=sum(bi2de(vec2mat(mat,16),'left-msb'))
+% This takes modulo FFFF = 
+modulo=mod(sumOfData,2^16-1)
+        
+% negate bits
+negBits=mod(2^16-1,modulo)
 
+% This is the parity bits, though they aren't at exactly 16 bits.
+% This is handled below
+p=de2bi(negBits,16,'left-msb')
 csuppose=[0 1 1 0 0 0 1 1 1 0 0 1 1 1 1 1];
 isequal(p,csuppose)
 % C ska bli 0110 0011 1001 1111
 
+mod(sum(bi2de(vec2mat([d csuppose],16),'left-msb')),2^16-1);
 
+%% Paddar med nollor i början!!
+clc
+a=ones(1,17)
+zeros(1,ceil(numel(a)/16)*16-length(a))
+a=[zeros(1,ceil(numel(a)/16)*16-length(a)) a]
 
 %%
 clear all
@@ -85,13 +87,13 @@ p=mod(sum(a),2)
 
 %% Check available packets
 clc
-
-for i=2:14300
+a=[];
+for i=2:sqrt(14300)
     if mod(14300,i)==0
-        14300/i
+        a=[a 14300/i];
     end
 end
-
+disp(a)
 
 %% Testa mäta tiden över Fread och Write
 
