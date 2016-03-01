@@ -95,25 +95,23 @@ for i=2:sqrt(14300)
 end
 disp(a)
 
-%% Testa mäta tiden över Fread och Write
 
-% ingen aning om vad jag gör
-Channel=tcpip('localhost', 30000, 'NetworkRole', 'client');
-set(Channel,'TransferDelay','off')
-set(Channel,'OutputBufferSize',15000)
-set(Channel,'InputBufferSize',4000)
+%% Val av framelength
+clc
 
-fopen(Channel);
-fwrite(Channel, TransmissionAttempts, 'int8') 
-pause(0.1)
-fclose(Channel);
+% CRC: N=n-k
+% information bits k
+% polynomets grad N
+% codewords bits n
 
-ackframe = [1 1]
-tic
-WriteToChannel(Channel, ackframe)
-Y = ReadFromChannel(Channel, 2);
-toc
+% Maxlängden
+N=31;
 
 
+disp(['codeword length must be shorter than: ',num2str(2^(N)-1)])
+disp(['Det måste vara ett polynom av minst ' num2str(ceil(log2(14300+1))),' bitar '])
+disp(['Burst error upptäckbara upptill: ',num2str(N)])
 
-%Aja fungerar inte
+log2(14300+1)
+
+

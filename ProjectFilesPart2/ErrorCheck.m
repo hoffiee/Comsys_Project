@@ -46,13 +46,9 @@ switch TypeOfErrorCheck
         bError=mod(-modulo,2^16-1);
         
     case 'CRC'
+        % CRC-32
+        g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1]; 
         
-        %g=[1 0 1 1];
-        %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
-        
-        % CRC32C, ska vara bra på Intel processorer
-        g=[1 0 0 0 1 1 1 1 0 1 1 0 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 0 0 0 0 0];
-        %g=[1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1]; 
         pl=length(g)-1; % Takes the length of the control bits
         d=data(1:end-pl)'; % Removes the parity bits from the received data
         nd=[d zeros(1,pl)]; % adds zeros in the end

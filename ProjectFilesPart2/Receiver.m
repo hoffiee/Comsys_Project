@@ -56,9 +56,10 @@ while ipacket<=nPackets
     % 1 bit for sequence number, it is included in the crc/ic, 
     %therefore no controlbit is needed, 
     % 16 bits for both CRC-16 and IC atm
-    % 39 för crc32c
+    % 32 bits for CRC-32
+    
     hbits=1;
-    pbits=31;
+    pbits=32;
     
     nBitsOverhead = hbits+pbits;%[]; % number of overhead bits
     ExpectedLengtOfFrame = nBitsPacket+nBitsOverhead; % length of the frame we should receive

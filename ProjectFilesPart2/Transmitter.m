@@ -70,10 +70,13 @@ while ipacket<=size(packages,1)
         WriteToChannel(Channel, frame)
         %disp(['skickade packet no.', num2str(ipacket), ' med S_last: ',num2str(S_last)])
         
-        timeout= 0.005; % This is hopefully little bit bigger than tprop.
+        timeout= 0.006; % This is hopefully little bit bigger than tprop.
         % Did test where timeout were lowered until the total time stopped
-        % getting smaller
+        % getting smaller, if the timeout is to small, the total time will
+        % begin to get bigger again.
        
+        
+        
         % 4. stop and wait
         tic
         while toc < timeout 

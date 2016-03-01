@@ -49,10 +49,9 @@ switch TypeOfErrorCheck
         p=de2bi(negBits,16,'left-msb');
         
     case 'CRC'  % Cyclic redundancy codes CRC
-        %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
-        %g=[1 0 1 1];
-        %g=[1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1];
-        g=[1 0 0 0 1 1 1 1 0 1 1 0 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 0 0 0 0 0];
+        
+        % CRC-32
+        g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
         
         pl=length(g)-1; % Calculates number of bits
         nd=[d zeros(1,pl)]; % adds zero to the end
