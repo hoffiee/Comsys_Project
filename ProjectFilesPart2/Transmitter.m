@@ -70,8 +70,8 @@ while ipacket<=size(packages,1)
         WriteToChannel(Channel, frame)
         %disp(['skickade packet no.', num2str(ipacket), ' med S_last: ',num2str(S_last)])
         
-        timeout= 0.005; % This is hopefully little bit bigger than Tprop.
-        % Did test where timeout were lowered untill the total time stopped
+        timeout= 0.005; % This is hopefully little bit bigger than tprop.
+        % Did test where timeout were lowered until the total time stopped
         % getting smaller
        
         % 4. stop and wait

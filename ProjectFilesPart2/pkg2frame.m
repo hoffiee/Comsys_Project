@@ -20,14 +20,12 @@ function frame=pkg2frame(packet,header)
 
 %------------- BEGIN CODE --------------
  
-
-%=======================================
-%===== DENNA FUNGERAR SOM DEN SKA! ===== Nope
-%=======================================
-
+% Add the header into the packet, therefore it is included
+% in the error checks.
 d=[header packet];
 
-TypeOfErrorCheck='IC';
+% Choosen type of control method
+TypeOfErrorCheck='CRC';
 
 switch TypeOfErrorCheck
     case 'parity'   % Single parity check codes
@@ -46,32 +44,31 @@ switch TypeOfErrorCheck
         
         % negate bits (flips bits)
         negBits=mod(-modulo,2^16-1);
-        
-        
+              
         % This is the parity bits
         p=de2bi(negBits,16,'left-msb');
         
     case 'CRC'  % Cyclic redundancy codes CRC
         %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
         %g=[1 0 1 1];
-        g=[1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1];
+        %g=[1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1];
+        g=[1 0 0 0 1 1 1 1 0 1 1 0 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 0 0 0 0 0];
         
-        pl=length(g)-1;
-        nd=[d zeros(1,pl)];
-
-        if sum(d) == 0 % Ett hax för att få bara nollor att fungera...
+        pl=length(g)-1; % Calculates number of bits
+        nd=[d zeros(1,pl)]; % adds zero to the end
+    
+        % If all entered bits is zero, return p as zeros()
+        if sum(d) == 0 
             p=nd(end-pl+1:end);
-        else
-            %disp(~isempty(find(nd,1)))
-            %disp(length(nd))
+        else    % While find finds a one and that the index does not exceed
+                % the length of the data
             while ~isempty(find(nd,1)) && find(nd,1) <= length(d)    
-                ind = find(nd,1);
-                %disp(['ind:', num2str(ind)])
-                nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g);
+                ind = find(nd,1); % Find the index of the first 1.
+                nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g); % Perform division
             end
+            % Return the resulting bits
             p=nd(end-pl+1:end);
         end     
 end
-
-frame=[d p];                  % construct frame including header and error check bits
+frame=[d p];     % construct frame including header and error check bits
 end

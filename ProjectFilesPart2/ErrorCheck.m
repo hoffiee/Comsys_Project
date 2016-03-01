@@ -22,67 +22,56 @@ function [bError] = ErrorCheck(data,TypeOfErrorCheck)
 %------------- BEGIN CODE --------------
 
 switch TypeOfErrorCheck
-    case 'parity'
+    case 'parity'   % Single parity bit
+        % Calculate the parity bit
         p = mod(sum(data(1:end-1)),2);
         
-        if isequal(p,data(end))
-            bError = true;
-        else
-            bError = false;
-        end
-    case 'IC'
+        % Check if the calculated bit is the same as the received
+        % Return bError, 0 if no error is detected
+        bError=~isequal(p,data(end))
+        
+    case 'IC'   % Internet Checksum
 
         % Pads with zeros so that its a multiplication of 16
         pd=[zeros(1,ceil(numel(data')/16)*16-length(data')) data'];
-        
+
         % Shapes the data into X rows with 16 bits
-        d=reshape(pd,16,[])';
-        
-        % Takes the sum of each row
-        nsum=sum(bi2de(d,'left-msb'));
+        % then takes the sum all rows. 
+        nsum=sum(bi2de(reshape(pd,16,[])','left-msb'));
         
         % Takes modulo FFFF 
         modulo=mod(nsum,2^16-1);
         
-        negBits=mod(-modulo,2^16-1);
-       
-        if ~negBits;
-            bError = true;
-        else
-            bError = false;
-        end
+        % Negate bits and return bError, 0 if no error is detected
+        bError=mod(-modulo,2^16-1);
         
     case 'CRC'
         
         %g=[1 0 1 1];
         %g=[1 0 0 0 0 0 1 0 0 1 1 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 0 1 1 0 1 1 1];
-        g=[1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1];
-        pl=length(g)-1;
-        d=data(1:end-pl)';
-        nd=[d zeros(1,pl)]; % la till ' för att ändra matrisen till en vektor 
         
-        if sum(d) == 0 % Ett hax för att få bara nollor att fungera...
+        % CRC32C, ska vara bra på Intel processorer
+        g=[1 0 0 0 1 1 1 1 0 1 1 0 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 0 0 0 0 0];
+        %g=[1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1]; 
+        pl=length(g)-1; % Takes the length of the control bits
+        d=data(1:end-pl)'; % Removes the parity bits from the received data
+        nd=[d zeros(1,pl)]; % adds zeros in the end
+        
+         % If all entered bits is zero, return p as zeros()
+        if sum(d) == 0 
             p=nd(end-pl+1:end);
-        else
-            %disp(~isempty(find(nd,1)))
-            %disp(length(nd))
+        else    % While find finds a one and that the index does not exceed
+                % the length of the data
             while ~isempty(find(nd,1)) && find(nd,1) <= length(d)    
+                % find the index where the first 1 is.
                 ind = find(nd,1);
-                %disp(['ind:', num2str(ind)])
-                nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g);
+                nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g); % perform Division
             end
-            p=nd(end-pl+1:end);
+            p=nd(end-pl+1:end); % the resulting bits
         end       
+        % Return bError, 0 if no error is detected
+        bError = ~isequal(p,data(length(data)-pl+1:end)');
         
-
-        % La till +1 för att se de fyra sista med
-        %disp(p)
-        %disp(data(length(data)-pl+1:end)')
-        if isequal(p,data(length(data)-pl+1:end)')
-            bError = true;
-        else
-            bError = false;
-        end    
 end
 end
 
