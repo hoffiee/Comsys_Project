@@ -65,8 +65,6 @@ while ipacket<=nPackets
 
         ackframe = [R_next R_next]; 
         
-        % The sequence number is getting errorchecked within the
-        % errorcheck, therefore no controlbits is needed at this point.
         if (~ErrorCheck(Y,'CRC')) && isequal(Y(1),R_next)              
             splitData=Y(1+hbits:end-pbits); % Remove header and trailer
             infopackets(ipacket,:)=splitData; % Add data to infopackets
