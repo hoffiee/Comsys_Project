@@ -23,12 +23,11 @@ function [bError] = ErrorCheck(data,TypeOfErrorCheck)
 
 switch TypeOfErrorCheck
     case 'parity'   % Single parity bit
-        % Calculate the parity bit
         p = mod(sum(data(1:end-1)),2);
         
         % Check if the calculated bit is the same as the received
         % Return bError, 0 if no error is detected
-        bError=~isequal(p,data(end))
+        bError=~isequal(p,data(end));
         
     case 'IC'   % Internet Checksum
 
@@ -59,15 +58,13 @@ switch TypeOfErrorCheck
         else    % While find finds a one and that the index does not exceed
                 % the length of the data
             while ~isempty(find(nd,1)) && find(nd,1) <= length(d)    
-                % find the index where the first 1 is.
-                ind = find(nd,1);
+                ind = find(nd,1); % find the index where the first 1 is.
                 nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g); % perform Division
             end
             p=nd(end-pl+1:end); % the resulting bits
         end       
         % Return bError, 0 if no error is detected
         bError = ~isequal(p,data(length(data)-pl+1:end)');
-        
 end
 end
 

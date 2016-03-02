@@ -19,9 +19,7 @@ function frame=pkg2frame(packet,header)
 % 2.00, 2014-12-10, Erik Steinmetz: Second version...
 
 %------------- BEGIN CODE --------------
- 
-% Add the header into the packet, therefore it is included
-% in the error checks.
+
 d=[header packet];
 
 % Choosen type of control method
@@ -61,7 +59,7 @@ switch TypeOfErrorCheck
             p=nd(end-pl+1:end);
         else    % While find finds a one and that the index does not exceed
                 % the length of the data
-            while ~isempty(find(nd,1)) && find(nd,1) <= length(d)    
+            while ~isempty(find(nd,1)) && find(nd,1) <= length(d)  
                 ind = find(nd,1); % Find the index of the first 1.
                 nd(ind:ind+pl) = bitxor(nd(ind:ind+pl),g); % Perform division
             end

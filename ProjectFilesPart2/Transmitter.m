@@ -68,14 +68,13 @@ while ipacket<=size(packages,1)
         
         %3 Send current frame
         WriteToChannel(Channel, frame)
-        %disp(['skickade packet no.', num2str(ipacket), ' med S_last: ',num2str(S_last)])
+        %disp(['sent packet no.', num2str(ipacket), ' with S_last: ',num2str(S_last)])
         
         timeout= 0.006; % This is hopefully little bit bigger than tprop.
         % Did test where timeout were lowered until the total time stopped
         % getting smaller, if the timeout is to small, the total time will
         % begin to get bigger again.
        
-        
         
         % 4. stop and wait
         tic
@@ -84,7 +83,6 @@ while ipacket<=size(packages,1)
             % Reads the channel
             Y = ReadFromChannel(Channel, ExpectedLengthOfFrame);
             
-            
             if ~isnan(Y) %if data received
                 % If no error detected and corr seq number.  
                 if isequal(Y',[~S_last ~S_last])          
@@ -92,7 +90,7 @@ while ipacket<=size(packages,1)
                     ipacket=ipacket+1; % increment ipacket
                     S_last=~S_last; % Update S_last
                 end
-                break;
+                break; % If data received, leave wait state
             end
         end
     end

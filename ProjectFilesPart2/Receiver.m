@@ -52,16 +52,11 @@ R_next = 0;                               %initialize next frame expected (seque
 %------------- START EDITING HERE --------------
 
 while ipacket<=nPackets 
+        
+    hbits=1;    % one bit as seq no.
+    pbits=32;   % CRC-32
     
-    % 1 bit for sequence number, it is included in the crc/ic, 
-    %therefore no controlbit is needed, 
-    % 16 bits for both CRC-16 and IC atm
-    % 32 bits for CRC-32
-    
-    hbits=1;
-    pbits=32;
-    
-    nBitsOverhead = hbits+pbits;%[]; % number of overhead bits
+    nBitsOverhead = hbits+pbits;    % nr of overhead bits
     ExpectedLengtOfFrame = nBitsPacket+nBitsOverhead; % length of the frame we should receive
     Y = ReadFromChannel(Channel, ExpectedLengtOfFrame);
     
@@ -72,7 +67,7 @@ while ipacket<=nPackets
         
         % The sequence number is getting errorchecked within the
         % errorcheck, therefore no controlbits is needed at this point.
-        if (~ErrorCheck(Y,'CRC')) && isequal(Y(1),R_next)            
+        if (~ErrorCheck(Y,'CRC')) && isequal(Y(1),R_next)              
             splitData=Y(1+hbits:end-pbits); % Remove header and trailer
             infopackets(ipacket,:)=splitData; % Add data to infopackets
             R_next = bitxor(R_next,1); % update R_next
